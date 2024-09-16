@@ -14,7 +14,8 @@ export const AppButton = ({
   }
   return (
     <Tooltip
-      delayDuration={800}
+      delayDuration={500}
+      disableHoverableContent={true}
       style={{ pointerEvents: "none" }}
       content={tooltip}
     >

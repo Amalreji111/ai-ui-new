@@ -10,9 +10,10 @@ export const openAppPopup = (
     onClose: () => void;
     size: "1" | "2" | "3" | "4";
     style: CSSProperties;
+    title: ReactNode;
   }> = {}
 ) => {
-  const { onClose = () => {}, size = "1", style = {} } = options;
+  const { onClose = () => {}, size = "1", style = {}, title } = options;
   updateAppPopupState((s) => {
     const contentsLength = s.popupContents.push(
       <Dialog.Root
@@ -42,6 +43,8 @@ export const openAppPopup = (
             }
           }}
         >
+          <Dialog.Title>{title}</Dialog.Title>
+          <Dialog.Description>{title}</Dialog.Description>
           <IconButton
             onClick={() => {
               closeAppPopup();
