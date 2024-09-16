@@ -10,6 +10,7 @@ sed -i '' "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" package.json
 
 # Commit the version change
 git add package.json
+git add CHANGELOG.md
 git commit -m "Update version to $VERSION"
 
 # Tag the commit with the version

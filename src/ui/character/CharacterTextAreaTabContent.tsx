@@ -1,5 +1,5 @@
 import { isDefined, safe } from "@mjtdev/engine";
-import { Button, Flex, Tabs } from "@radix-ui/themes";
+import { Button, Flex, Tabs, Text } from "@radix-ui/themes";
 import type { AppCharacter, TavernCardV2 } from "ai-worker-common";
 import { produce } from "immer";
 import { memo, useRef, useState } from "react";
@@ -7,6 +7,7 @@ import { AiplEditor } from "../aipl/AiplEditor";
 import type { AiplEditorRef } from "../aipl/AiplEditorRef";
 import { stringifyEq } from "../chat/stringifyEq";
 import { generateCharacterFieldPromptText } from "./generateCharacterFieldPromptText";
+import { AppButton } from "../common/AppButton";
 
 export const CharacterTextAreaTabContent = memo(
   ({
@@ -17,6 +18,8 @@ export const CharacterTextAreaTabContent = memo(
     omitDataKey,
     extraDirection = "",
     example,
+    helpText,
+    generalHelpText = "Use AIPL code and template variables, note that characters like '(' and ')' must be escaped with a backslash like '\\('",
   }: {
     example?: string;
     extraDirection?: string;
@@ -25,6 +28,8 @@ export const CharacterTextAreaTabContent = memo(
     character: AppCharacter;
     defaultValue: string | undefined;
     onChange: (value: string) => void;
+    helpText?: string;
+    generalHelpText?: string;
   }) => {
     const ref = useRef<AiplEditorRef>(null);
     const [state, setState] = useState(
@@ -80,16 +85,43 @@ export const CharacterTextAreaTabContent = memo(
           gap="2"
           direction={"column"}
         >
-          <AiplEditor
-            fieldName={omitDataKey}
-            characterId={character.id}
-            ref={ref}
-            defaultValue={defaultValue}
-            onChange={(value) => onChange(value)}
-          />
+          {helpText && (
+            <Flex
+              gap={"2"}
+              direction={"column"}
+              style={{
+                fontSize: "0.8em",
+                paddingLeft: "1em",
+              }}
+            >
+              <Text>{helpText}</Text>
+              <Text>{generalHelpText}</Text>
+              <Text>
+                <a
+                  target="_blank"
+                  href="https://github.com/AIPL-labs/aipl/blob/master/ai-programming-language-0.10.md"
+                >
+                  AIPL documentaton
+                </a>
+              </Text>
+            </Flex>
+          )}
+
+          <Flex
+            style={{ border: "1px solid grey", width: "100%", height: "100%" }}
+          >
+            <AiplEditor
+              fieldName={omitDataKey}
+              characterId={character.id}
+              ref={ref}
+              defaultValue={defaultValue}
+              onChange={(value) => onChange(value)}
+            />
+          </Flex>
 
           <Flex gap="2">
-            <Button
+            <AppButton
+              tooltip={`Generate ${tabKey} prompt text`}
               color={state.abortController ? "amber" : "green"}
               onClick={async () => {
                 if (state.abortController) {
@@ -118,7 +150,7 @@ export const CharacterTextAreaTabContent = memo(
               }}
             >
               {state.abortController ? "Cancel" : "Generate"}
-            </Button>
+            </AppButton>
           </Flex>
         </Flex>
       </Tabs.Content>

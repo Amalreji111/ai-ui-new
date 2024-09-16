@@ -1,26 +1,27 @@
-import { Button, Flex, Text } from "@radix-ui/themes";
+import { Button, Flex, Text, type FlexProps } from "@radix-ui/themes";
 import { Prompts } from "ai-worker-common";
 import type { CSSProperties } from "react";
 import { formatAndCapitalize } from "../../common/formatAndCapitalize";
-import type { RadixColor } from "../character/RADIX_COLORS";
+import type { RadixColor } from "./RADIX_COLORS";
 
 export const AppButtonGroup = ({
-  actions,
-  style = {},
+  actions = {},
+  // style = {},
   buttonStyle = {},
-  direction,
+  // direction,
   colors = {},
   templateVars = {},
   disableds = {},
+  ...rest
 }: {
-  direction?: "row" | "column" | "row-reverse" | "column-reverse";
-  style?: CSSProperties;
+  // direction?: "row" | "column" | "row-reverse" | "column-reverse";
+  // style?: CSSProperties;
   buttonStyle?: CSSProperties;
-  actions: Record<string, () => void>;
+  actions?: Record<string, () => void>;
   templateVars?: Record<string, string | undefined>;
   colors?: Record<string, RadixColor>;
   disableds?: Record<string, boolean>;
-}) => {
+} & Partial<FlexProps>) => {
   const contents = Object.entries(actions).map((entry) => {
     const [key, value] = entry;
     return (
@@ -48,7 +49,7 @@ export const AppButtonGroup = ({
     );
   });
   return (
-    <Flex style={style} wrap={"wrap"} direction={direction} gap="1">
+    <Flex wrap={"wrap"} gap="1" {...rest}>
       {contents}
     </Flex>
   );

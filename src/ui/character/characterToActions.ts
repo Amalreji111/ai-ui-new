@@ -19,6 +19,9 @@ import { switchWindow } from "../switchWindow";
 import { downloadCharacterPng } from "./downloadCharacterPng";
 import { openCharacterEditor } from "./openCharacterEditor";
 import { openPublicAccessPointsDialog } from "./public-access/openPublicAccessPointsDialog";
+import { openFormEditorPopup } from "../form/openFormEditorPopup";
+import { openActionsDialog } from "./ActionsDialog";
+import { closeAppPopup } from "../popup/closeAppPopup";
 
 export type CharacterAction = keyof ReturnType<typeof characterToActions>;
 
@@ -27,7 +30,27 @@ export const characterToActions = (character: AppCharacter) =>
     download: async () => {
       return downloadCharacterPng(character);
     },
-    delete: () => deleteCharacter(character.id),
+    delete: () => {
+      // const confirm = openFormEditorPopup(
+      //   { Yes: "", No: "" },
+      //   { title: "Are you sure you want to delete this character?" }
+      // );
+      // deleteCharacter(character.id);
+      openActionsDialog({
+        gap: "2em",
+        colors: { delete: "red" },
+        actions: {
+          delete: async () => {
+            await deleteCharacter(character.id);
+            closeAppPopup();
+          },
+          cancel: () => {
+            closeAppPopup();
+          },
+        },
+        title: "Are you sure you want to delete this character?",
+      });
+    },
     clearVectorStore: () => {
       AppMessagesState.dispatch({
         type: "vector:deleteNamespace",
@@ -74,4 +97,4 @@ export const characterToActions = (character: AppCharacter) =>
     publicAccessPoints: () => {
       openPublicAccessPointsDialog({ characterId: character.id });
     },
-  } satisfies ActionMap);
+  }) satisfies ActionMap;

@@ -1,7 +1,8 @@
-import { Dialog, Flex } from "@radix-ui/themes";
+import { Dialog, Flex, IconButton } from "@radix-ui/themes";
 import type { CSSProperties, ReactNode } from "react";
 import { updateAppPopupState } from "./AppPopupState";
 import { closeAppPopup } from "./closeAppPopup";
+import { IoClose } from "react-icons/io5";
 
 export const openAppPopup = (
   node: ReactNode,
@@ -9,9 +10,10 @@ export const openAppPopup = (
     onClose: () => void;
     size: "1" | "2" | "3" | "4";
     style: CSSProperties;
+    title: ReactNode;
   }> = {}
 ) => {
-  const { onClose = () => {}, size = "1", style = {} } = options;
+  const { onClose = () => {}, size = "1", style = {}, title } = options;
   updateAppPopupState((s) => {
     const contentsLength = s.popupContents.push(
       <Dialog.Root
@@ -27,9 +29,12 @@ export const openAppPopup = (
         defaultOpen={true}
       >
         <Dialog.Content
+          onInteractOutside={(evt) => evt.preventDefault()}
           size={size}
           style={{
             maxWidth: "fit-content",
+            position: "relative",
+            // backgroundColor: "red",
             ...style,
           }}
           onKeyUp={(evt) => {
@@ -38,27 +43,28 @@ export const openAppPopup = (
             }
           }}
         >
+          <Dialog.Title>{title}</Dialog.Title>
+          <Dialog.Description>{title}</Dialog.Description>
+          <IconButton
+            onClick={() => {
+              closeAppPopup();
+            }}
+            size={"2"}
+            variant="outline"
+            style={{
+              // backgroundColor: "var(--color-panel-solid)",
+              // borderRadius: "50%",
+              position: "absolute",
+              right: "0.1ch",
+              top: "0.1em",
+              // zIndex: 1,
+            }}
+          >
+            <IoClose />
+          </IconButton>
           <Flex align={"center"} direction={"column"}>
             {node}
           </Flex>
-          {/* <Flex>
-            <IconButton
-              onClick={() => {
-                closeAppPopup();
-              }}
-              size={"1"}
-              variant="outline"
-              style={{
-                backgroundColor: "var(--color-panel-solid)",
-                position: "absolute",
-                right: "-1em",
-                top: "-1em",
-                borderRadius: "50%",
-              }}
-            >
-              <IoClose />
-            </IconButton>
-          </Flex> */}
         </Dialog.Content>
       </Dialog.Root>
     );
