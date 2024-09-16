@@ -1,6 +1,6 @@
 import type { ByteLike } from "@mjtdev/engine";
 import { Images, Objects, isDefined, isEmpty } from "@mjtdev/engine";
-import { Button, Flex, Tabs, Text } from "@radix-ui/themes";
+import { Flex, Tabs, Text } from "@radix-ui/themes";
 import type { AppCharacter, DecomposedAppCharacter } from "ai-worker-common";
 import {
   AiCharacters,
@@ -14,8 +14,6 @@ import { produce } from "immer";
 import { useEffect, useState } from "react";
 import { formatAndCapitalize } from "../../common/formatAndCapitalize";
 import { AppEvents } from "../../event/AppEvents";
-import { DataObjectStates } from "../../state/data-object/DataObjectStates";
-import { DatasState } from "../../state/data/DatasState";
 import { getHomeAuth } from "../../state/getHomeAuth";
 import { useUserState } from "../../state/user/UserState";
 import { useActiveGroup } from "../../state/user/useActiveGroup";
@@ -32,22 +30,28 @@ import { CharacterFunctionsTabContent } from "./CharacterFunctionsTabContent";
 import { CharacterReportsTabContent } from "./CharacterReportsTabContent";
 import { CharacterTextAreaTabContent } from "./CharacterTextAreaTabContent";
 import { ModifyCharacterAccess } from "./access/ModifyCharacterAccess";
+import { AppButton } from "../common/AppButton";
 
 export const CharacterEditor = ({
   character,
   onSubmit = () => {},
   defaultTab = "greeting",
+  defaultTabGroup = "prompting",
 }: {
   // defaultTab: keyof typeof CHARACTER_DATA_TAB_CONTENTS;
   defaultTab?: string;
+  defaultTabGroup?: string;
   character: Partial<AppCharacter>;
   onSubmit?: (result: DecomposedAppCharacter | undefined) => void;
 }) => {
+  type CharacterDataTab = keyof typeof CHARACTER_DATA_TAB_CONTENTS;
+  type TabGroup = (typeof TAB_GROUPS)[number];
   const { id: userId } = useUserState();
 
   const [tab, setTab] = useState(
     defaultTab as keyof typeof CHARACTER_DATA_TAB_CONTENTS
   );
+  const [tabGroup, setTabGroup] = useState(defaultTabGroup as TabGroup);
   const [resultCharacter, setResultCharacter] = useState(
     produce(AppObjects.create("app-character", character), () => {})
   );
@@ -473,27 +477,90 @@ export const CharacterEditor = ({
     ),
   } as const;
 
-  const tabs = Objects.keys(CHARACTER_DATA_TAB_CONTENTS).map((key, i) => (
+  const TAB_GROUPS = [
+    "prompting",
+    "media",
+    "settings",
+    "capabilities",
+    "metadata",
+  ] as const;
+
+  const TAB_GROUP_TO_CONTENT_TABs: Record<
+    (typeof TAB_GROUPS)[number],
+    CharacterDataTab[]
+  > = {
+    prompting: [
+      "description",
+      "personality",
+      "scenerio",
+      "system",
+      "direction",
+      "Msg Examples",
+    ],
+    media: ["image", "videos", "voice"],
+    settings: ["access", "secrets"],
+    capabilities: [
+      "preChat",
+      "greeting",
+      "reports",
+      "functions",
+      "formSkill",
+      "starters",
+    ],
+    metadata: ["tags", "notes"],
+  };
+
+  const topLevelTabs = TAB_GROUPS.map((tabGroupKey, i) => (
     <Flex key={i} direction={"column"}>
-      <Button
+      <AppButton
+        tooltip="Switch Tab Group"
         size={"1"}
-        color={tab === key ? "amber" : undefined}
+        color={tabGroupKey === tabGroup ? "amber" : undefined}
         variant="outline"
-        onClick={() => setTab(key)}
+        onClick={() => {
+          setTabGroup(tabGroupKey);
+          setTab(TAB_GROUP_TO_CONTENT_TABs[tabGroupKey][0]);
+        }}
       >
         <Text
           style={{
             // HACK:stop long text cuttoff, bug in Radix Themes?
-            width: `${key.length + 2}ch`,
+            width: `${tabGroupKey.length + 2}ch`,
             whiteSpace: "nowrap",
             userSelect: "none",
             overflow: "hidden",
             textOverflow: "ellipsis",
           }}
         >
-          {formatAndCapitalize(key)}
+          {formatAndCapitalize(tabGroupKey)}
         </Text>
-      </Button>
+      </AppButton>
+
+      <Flex
+        gap="1"
+        wrap={"wrap"}
+        style={{ marginTop: "0.5em", marginLeft: "1ch" }}
+      >
+        {Objects.keys(CHARACTER_DATA_TAB_CONTENTS)
+          .filter((characterDataTabKey) => {
+            return (
+              TAB_GROUP_TO_CONTENT_TABs[tabGroupKey].includes(
+                characterDataTabKey
+              ) && tabGroupKey === tabGroup
+            );
+          })
+          .map((characterDataTabKey) => (
+            <AppButton
+              tooltip="Switch Tab"
+              size={"1"}
+              color={characterDataTabKey === tab ? "amber" : undefined}
+              variant="outline"
+              onClick={() => setTab(characterDataTabKey)}
+            >
+              {characterDataTabKey}
+            </AppButton>
+          ))}
+      </Flex>
     </Flex>
   ));
 
@@ -528,7 +595,8 @@ export const CharacterEditor = ({
               );
             }}
           />
-          <Button
+          <AppButton
+            tooltip="Copy Character ID"
             onClick={() => {
               console.log(resultCharacter.id);
               navigator.clipboard.writeText(resultCharacter.id);
@@ -539,7 +607,7 @@ export const CharacterEditor = ({
             }}
           >
             ID
-          </Button>
+          </AppButton>
         </Flex>
       </Flex>
 
@@ -553,7 +621,7 @@ export const CharacterEditor = ({
             direction={"column"}
             gap={"2"}
           >
-            {tabs}
+            {topLevelTabs}
           </Flex>
           <Flex
             style={{
@@ -576,14 +644,14 @@ export const CharacterEditor = ({
             </Flex>
 
             <Flex flexShrink={"1"} gap="3" mt="4" justify="center">
-              <Button
+              <AppButton
                 onClick={() => onSubmit(undefined)}
                 variant="soft"
                 color="gray"
               >
                 Cancel
-              </Button>
-              <Button
+              </AppButton>
+              <AppButton
                 onClick={() =>
                   onSubmit({
                     character: resultCharacter,
@@ -597,7 +665,7 @@ export const CharacterEditor = ({
                 }
               >
                 Save
-              </Button>
+              </AppButton>
             </Flex>
           </Flex>
         </Flex>
