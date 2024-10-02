@@ -1,1 +1,1 @@
-export const HARD_GROUPS = ["app-admin", "app-sales"];
+export const HARD_GROUPS = ["app-admin", "app-sales", "beta"];
