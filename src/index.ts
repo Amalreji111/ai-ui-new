@@ -77,14 +77,14 @@ import { findFirstPapId } from "./ui/overlay/findFirstPapId";
   }
 
   setupLocalAiFunctions();
-  if (locationState.modes.includes("overlay")) {
+
+  if (
+    !locationState.modes.includes("pap") ||
+    locationState.modes.includes("overlay")
+  ) {
     updateAppState((s) => {
       s.agreedToTerms = true;
     });
   }
-
-  updateAppState((s) => {
-    s.agreedToTerms = true;
-  });
   return App();
 })();

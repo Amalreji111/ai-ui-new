@@ -1,5 +1,11 @@
 import type { ByteLike } from "@mjtdev/engine";
-import { BrowserFiles, Bytes, Dropzone, Images, Strings } from "@mjtdev/engine";
+import {
+  BrowserFiles,
+  Bytes,
+  Dropzone,
+  Images,
+  Strings,
+} from "@mjtdev/engine";
 import { Card, Flex, Separator, Strong } from "@radix-ui/themes";
 import type {
   AppCharacter,
@@ -9,22 +15,24 @@ import type {
 } from "ai-worker-common";
 import { AppImages, uniqueId } from "ai-worker-common";
 import { FaMicrophoneAlt } from "react-icons/fa";
+import { useState } from "react";
+import * as Collapsible from "@radix-ui/react-collapsible";
 import { AsrCustoms } from "../../asr-custom/AsrCustoms";
 import { useCustomAsrState } from "../../asr-custom/updateCustomAsrState";
+import { audioPlayer } from "../../audio/AudioClipPlayer";
 import { AppEvents } from "../../event/AppEvents";
+import { DataObjectStates } from "../../state/data-object/DataObjectStates";
 import { DatasState } from "../../state/data/DatasState";
 import { getUserState } from "../../state/user/UserState";
-import { useIsUserGroup } from "../../state/user/useIsUserGroup";
 import { AppMessagesState } from "../../state/ws/AppMessagesState";
 import { Ttss } from "../../tts/Ttss";
-import { audioPlayer } from "../../audio/AudioClipPlayer";
 import { DEFAULT_CHAR_URL } from "../DEFAULT_CHAR_URL";
+import { AppButton } from "../common/AppButton";
 import { AppButtonGroup } from "../common/AppButtonGroup";
 import { AppIconButton } from "../common/AppIconButton";
 import { FormInputDisplay } from "../form/FormInputDisplay";
 import { FormFields } from "../user/FormFields";
 import { WaveformDisplay } from "./WaveformDisplay";
-import { DataObjectStates } from "../../state/data-object/DataObjectStates";
 
 export const VoiceEditor = ({
   character,
@@ -38,7 +46,7 @@ export const VoiceEditor = ({
   onChangeVoiceSample: (voiceSample: ByteLike | undefined) => void;
 }) => {
   const { enabled: asrEnabled, speaking: asrSpeaking } = useCustomAsrState();
-  // const isOpenBetaUser = false;
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   const sampleDisplay = voiceSample ? (
     <Card>
@@ -55,10 +63,9 @@ export const VoiceEditor = ({
               if (!voiceSample) {
                 return AppEvents.dispatchEvent("toast", "No sample");
               }
+              await Ttss.enableTts();
               const ab = await Bytes.toArrayBuffer(voiceSample);
               console.log("enqueueAudioClip", ab);
-              // audioPlayer.start()
-
               audioPlayer.enqueueAudioClip(ab.slice(0));
             },
             download: async () => {
@@ -73,9 +80,7 @@ export const VoiceEditor = ({
               const user = await DataObjectStates.getDataObject<AppUser>(
                 getUserState().id
               );
-              // create a 'fake character' that has the voice-sample
               const fakeImage = await Images.toBlob(DEFAULT_CHAR_URL);
-
               const idRaw = await Bytes.hashOf({ bytes: voiceSample });
               const contentAddress = await Bytes.encodeAsString(idRaw, 16);
               const imageDataId = uniqueId(
@@ -91,7 +96,6 @@ export const VoiceEditor = ({
                 image: fakeImage,
                 voiceSample,
               });
-              // TODO it might be nice to clean voice sample image up after...
               await DatasState.putBlob({
                 blob: png,
                 id: imageDataId,
@@ -179,7 +183,9 @@ export const VoiceEditor = ({
             <Dropzone
               iconSize="4em"
               iconCode="file_upload"
-              inactiveText={`${voiceSample ? "Replace" : "Add"} Voice Sample`}
+              inactiveText={`${
+                voiceSample ? "Replace" : "Add"
+              } Voice Sample`}
               action={async (files: File[]): Promise<void> => {
                 if (!files || files.length < 1) {
                   return;
@@ -213,7 +219,14 @@ export const VoiceEditor = ({
             </AppIconButton>
           </Flex>
         </Flex>
-        {style}
+        <Collapsible.Root open={showAdvanced} onOpenChange={setShowAdvanced}>
+          <Collapsible.Trigger asChild>
+            <AppButton variant="outline" style={{ marginTop: "1em" }}>
+              {showAdvanced ? "Hide Advanced Settings" : "Show Advanced Settings"}
+            </AppButton>
+          </Collapsible.Trigger>
+          <Collapsible.Content>{style}</Collapsible.Content>
+        </Collapsible.Root>
       </Flex>
 
       <Separator orientation="vertical" style={{ height: "20em" }} />

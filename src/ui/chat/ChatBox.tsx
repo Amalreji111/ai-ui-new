@@ -125,7 +125,7 @@ export const ChatBox = memo(
         }}
       >
         <Flex
-          display={windowHeight > MIN_AVATAR_SHOW_HEIGHT_PX ? "flex" : "none"}
+          // display={windowHeight > MIN_AVATAR_SHOW_HEIGHT_PX ? "flex" : "none"}
           direction={"column"}
           align={"center"}
           flexShrink={"1"}
