@@ -13,7 +13,7 @@
     "deploy-mjt": "npm run copy-mjt-config && npm run deploy",
     "deploy-all": "npm run deploy-mjt && npm run deploy-prod",
     "vite-start": "vite --strictPort --force --port 6199",
-    "build": "vite build",
+    "build": "NODE_OPTIONS=--max-old-space-size=8192 npx vite build",
     "build-overlay": "vite build --config vite.config.overlay.ts",
     "start": "vite --strictPort --force --port 6129",
     "storybook": "storybook dev -p 6006 --no-open",
