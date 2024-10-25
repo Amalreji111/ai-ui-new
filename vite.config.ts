@@ -30,6 +30,7 @@ export default defineConfig({
 
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
+<<<<<<< HEAD
     // __PAP_ID__: JSON.stringify(
     //   "access-point-1725394696984-a760a179-851e-48d0-b276-85e7a426239c"
     // ),
@@ -39,6 +40,15 @@ export default defineConfig({
     // __APP_FRONT__: JSON.stringify("power-user"),
 
     // Production pizza demo settings
+=======
+    // // __PAP_ID__: JSON.stringify(
+    // //   "access-point-1725394696984-a760a179-851e-48d0-b276-85e7a426239c"
+    // // ),
+    // __PAP_ID__: undefined,
+    // __APP_FRONT__: JSON.stringify("power-user"),
+
+    // AI-UI Production settings
+>>>>>>> e0024ab76010bfa2b1429c23dba958291ba14cb0
     __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
     __PAP_ID__: JSON.stringify(
       "access-point-1725571260862-23455f95-1253-4dfe-96e3-952ac6af647c"
