@@ -1,7 +1,14 @@
 # Changelog
 
 
+## 2024-10-25
+- increase nodejs heap space for vite build ([acccf2e](https://github.com/AIPL-labs/ai-ui/commit/acccf2ed757454b3ff6b4798bef5625bf2da6ef7)) by Matt Taylor
+- added build-publish script ([3d7ff27](https://github.com/AIPL-labs/ai-ui/commit/3d7ff2733473ed0610def013afe3b268c7716169)) by Matt Taylor
+- 3D Avatar works, with updated github dependecies ([c8a12c1](https://github.com/AIPL-labs/ai-ui/commit/c8a12c1549f8ec39f8d1ca0e300b551929f08c8c)) by Matt Taylor
+- First pass at 3D Avatar, use WS for getting R2 data instead of fetch ([f7f3eea](https://github.com/AIPL-labs/ai-ui/commit/f7f3eeaf866cb713ce7bb82038238e085de19a5f)) by Matt Taylor
+
 ## 2024-09-16
+- updated-changelog ([eaaabf6](https://github.com/AIPL-labs/ai-ui/commit/eaaabf6e373a3750adbe6f343c38df28f26e2e5f)) by Matt Taylor
 - added changlog script and publish package script ([2919bdf](https://github.com/AIPL-labs/ai-ui/commit/2919bdfd9b3a1d7a3bfa59d02d39b8adfabdc4ec)) by Matt Taylor
 - added changlog script and publish package script ([33a864c](https://github.com/AIPL-labs/ai-ui/commit/33a864c161839d4c2a733e0ff6f340070a133d94)) by Matt Taylor
 - bumped to latest Radix, redesign of character-editor, added documentation for character-editor ([e89944a](https://github.com/AIPL-labs/ai-ui/commit/e89944adbd7024a69df15cb5d990b9aa63f1da11)) by Matt Taylor
