@@ -2,12 +2,23 @@
 
 
 ## 2024-10-25
+- fix-merge-conflict ([bcacea8](https://github.com/AIPL-labs/ai-ui/commit/bcacea81e9610e261132252435918aad49a984cb)) by Matt Taylor
+- Merge branch 'master' of github.com:AIPL-labs/ai-ui ([60f1197](https://github.com/AIPL-labs/ai-ui/commit/60f11975322fa08f1d1a62ec6f623e1d6b370fe9)) by Matt Taylor
 - increase nodejs heap space for vite build ([acccf2e](https://github.com/AIPL-labs/ai-ui/commit/acccf2ed757454b3ff6b4798bef5625bf2da6ef7)) by Matt Taylor
 - added build-publish script ([3d7ff27](https://github.com/AIPL-labs/ai-ui/commit/3d7ff2733473ed0610def013afe3b268c7716169)) by Matt Taylor
 - 3D Avatar works, with updated github dependecies ([c8a12c1](https://github.com/AIPL-labs/ai-ui/commit/c8a12c1549f8ec39f8d1ca0e300b551929f08c8c)) by Matt Taylor
 - First pass at 3D Avatar, use WS for getting R2 data instead of fetch ([f7f3eea](https://github.com/AIPL-labs/ai-ui/commit/f7f3eeaf866cb713ce7bb82038238e085de19a5f)) by Matt Taylor
 
+## 2024-10-09
+- ai-ui-vite-config-update ([e0024ab](https://github.com/AIPL-labs/ai-ui/commit/e0024ab76010bfa2b1429c23dba958291ba14cb0)) by Matt Taylor
+- fixed video greeting browser-sec bug ([18aff2e](https://github.com/AIPL-labs/ai-ui/commit/18aff2e578b0c0fce1ff7b32d174ab90c2e6ca66)) by Matt Taylor
+
+## 2024-10-02
+- proper production settings for ai-ui ([acbd0b4](https://github.com/AIPL-labs/ai-ui/commit/acbd0b45a5a08dc39bd8fcc0a06dcc63a6966f35)) by Matt Taylor
+- re-add beta to hardcoded groups to fix add default char ([65b6218](https://github.com/AIPL-labs/ai-ui/commit/65b62182c6df458524a20fa47925c0226f77b3c4)) by Matt Taylor
+
 ## 2024-09-16
+- Merge remote-tracking branch 'origin/master' ([7c1bfd1](https://github.com/AIPL-labs/ai-ui/commit/7c1bfd1194f534e21f1fad2e403472adfc55d598)) by Matt Taylor
 - updated-changelog ([eaaabf6](https://github.com/AIPL-labs/ai-ui/commit/eaaabf6e373a3750adbe6f343c38df28f26e2e5f)) by Matt Taylor
 - added changlog script and publish package script ([2919bdf](https://github.com/AIPL-labs/ai-ui/commit/2919bdfd9b3a1d7a3bfa59d02d39b8adfabdc4ec)) by Matt Taylor
 - added changlog script and publish package script ([33a864c](https://github.com/AIPL-labs/ai-ui/commit/33a864c161839d4c2a733e0ff6f340070a133d94)) by Matt Taylor
