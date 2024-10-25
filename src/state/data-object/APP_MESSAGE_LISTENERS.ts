@@ -315,4 +315,5 @@ export const APP_MESSAGE_LISTENERS: {
       AppEvents.dispatchEvent("client:standbyNotice", mesage.detail);
     },
   ],
+  "data:put": [],
 };

@@ -1,13 +1,8 @@
 import { isUndefined } from "@mjtdev/engine";
+import { AppImages, AppVideos, type AppCharacter } from "ai-worker-common";
 import { DataObjectStates } from "../state/data-object/DataObjectStates";
+import { DatasState } from "../state/data/DatasState";
 import { getCurrentChat } from "../ui/chat/getCurrentChat";
-import {
-  AppImages,
-  AppVideos,
-  Datas,
-  type AppCharacter,
-} from "ai-worker-common";
-import { getHomeAuth } from "../state/getHomeAuth";
 
 export const setVideoValue = async ({
   query,
@@ -29,31 +24,22 @@ export const setVideoValue = async ({
   const chat = await getCurrentChat();
   console.log("chat", chat);
   const assistantId = chat?.aiCharacterId;
-  const character = await DataObjectStates.getDataObject<AppCharacter>(
-    assistantId
-  );
+  const character =
+    await DataObjectStates.getDataObject<AppCharacter>(assistantId);
   console.log("assistant", character);
   if (isUndefined(character)) {
     console.error("assistant not found for id", assistantId);
     return;
   }
   const { imageDataId } = character;
-  if (isUndefined(character?.imageDataId)) {
+  if (isUndefined(imageDataId)) {
     console.error("imageDataId not found for assistant", character);
     return;
   }
-  const resp = await Datas.getRemoteData({
-    id: character.imageDataId,
-    ...getHomeAuth(),
+  const blob = await DatasState.getData(imageDataId);
+  const { videoPack } = await AppImages.pngToTavernCardAndVoiceSample(blob, {
+    extraExtractions: ["videoPack"],
   });
-  if (!resp.ok) {
-    return console.error("error fetching image data", resp);
-  }
-
-  const buffer = await resp.arrayBuffer();
-  // setResultImage(blob);
-  const { voiceSample, videoPack } =
-    await AppImages.pngToTavernCardAndVoiceSample(buffer);
   const videos = AppVideos.videoPackToVideoRecords(videoPack);
   console.log("videos", videos);
   const videoBytes = videos[value];

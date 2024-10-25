@@ -1,10 +1,16 @@
-import { Colors, Objects, isDefined, type ByteLike } from "@mjtdev/engine";
+import { Avatar3dGltf } from "@mjtdev/avatar-3d";
+import {
+  Bytes,
+  Colors,
+  Objects,
+  isDefined,
+  type ByteLike,
+} from "@mjtdev/engine";
 import { Badge, Card, Flex, Separator, Text } from "@radix-ui/themes";
 import type { AppCharacter } from "ai-worker-common";
 import { AnimatePresence, motion } from "framer-motion";
 import type { CSSProperties } from "react";
-import { memo, useState } from "react";
-import { useIsUserGroup } from "../../state/user/useIsUserGroup";
+import { memo, useEffect, useState } from "react";
 import { DEFAULT_CHAR_URL } from "../DEFAULT_CHAR_URL";
 import { stringifyEq } from "../chat/stringifyEq";
 import { AppButtonGroup } from "../common/AppButtonGroup";
@@ -16,6 +22,7 @@ import { idToColor } from "../visual/idToColor";
 import { VideoPlayer } from "./VideoPlayer";
 import type { CharacterAction } from "./characterToActions";
 import { characterToActions } from "./characterToActions";
+import { useTtsState } from "../../tts/TtsState";
 
 export const CharacterAvatar = memo(
   ({
@@ -24,6 +31,7 @@ export const CharacterAvatar = memo(
     nameStyle = {},
     character,
     video,
+    avatar3d,
     showName = true,
     showTags = false,
     showNotes = false,
@@ -36,6 +44,7 @@ export const CharacterAvatar = memo(
     onClick = () => {},
   }: {
     video?: ByteLike;
+    avatar3d?: ByteLike;
     enableDocumentDrop?: boolean;
     showHoverButtons?: boolean;
     hoverActions?: CharacterAction[];
@@ -53,6 +62,19 @@ export const CharacterAvatar = memo(
   }) => {
     const [pointerOver, setPointerOver] = useState(false);
     const [videoEnded, setVideoEnded] = useState(false);
+    const [avatar3dFile, setAvatar3dFile] = useState<File | undefined>();
+    const { analyserNode } = useTtsState();
+
+    useEffect(() => {
+      if (!avatar3d) {
+        return;
+      }
+
+      const blob = Bytes.toBlob(avatar3d, "model/gltf-binary");
+      const file = new File([blob], "modal.glb");
+      setAvatar3dFile(file);
+    }, [avatar3d]);
+
     const backgroundColor = Colors.from("black").alpha(0.5).toString();
     const nameDisplay = showName ? (
       <Text style={{ ...nameStyle }}>{character?.card?.data?.name}</Text>
@@ -162,16 +184,28 @@ export const CharacterAvatar = memo(
                     exit={{ opacity: 0, transition: { duration: 0.1 } }}
                     key="greeting-image-active-motion"
                   >
-                    <DataImage
-                      key={character.imageDataId}
-                      style={imageStyle}
-                      dataId={character.imageDataId}
-                      src={DEFAULT_CHAR_URL}
-                    />
+                    {avatar3dFile ? (
+                      <Flex style={{ maxHeight: "40vh", overflow: "auto" }}>
+                        <Avatar3dGltf
+                          path={avatar3dFile}
+                          analyserNode={analyserNode}
+                          // showPhonemes={true}
+                          // showControls={true}
+                        />
+                      </Flex>
+                    ) : (
+                      <DataImage
+                        key={character.imageDataId}
+                        style={imageStyle}
+                        dataId={character.imageDataId}
+                        src={DEFAULT_CHAR_URL}
+                      />
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
             </Flex>
+
             {nameDisplay}
             {showTags || showNotes ? <Separator size={"4"} /> : undefined}
             {showNotes ? (

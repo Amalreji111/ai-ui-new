@@ -17,9 +17,18 @@ export class AudioClipPlayer {
 
   async start() {
     const ctx = await requestSpeakerAccess();
+
     updateTtsState((s) => {
       s.audioContext = ctx;
     });
+    if (isDefined(ctx)) {
+      const analyserNode = ctx.createAnalyser();
+      analyserNode.fftSize = 2048;
+      analyserNode.connect(ctx.destination);
+      updateTtsState((s) => {
+        s.analyserNode = analyserNode;
+      });
+    }
     console.log("enabled AudioClipPlayer!!!!!!!!!!!!!!!!!!");
     return isDefined(ctx);
   }
@@ -66,7 +75,7 @@ export class AudioClipPlayer {
     if (!arrayBuffer) {
       throw new Error("Unexpected empty audio clip queue");
     }
-    const { audioContext } = getTtsState();
+    const { audioContext, analyserNode } = getTtsState();
     if (isUndefined(audioContext)) {
       console.warn(
         "AudioClipPlayer: refusing to playNextClip, no audioContext"
@@ -87,7 +96,9 @@ export class AudioClipPlayer {
           return;
         }
         const source = audioContext.createBufferSource();
+
         source.buffer = audioBuffer;
+
         updateTtsState((s) => {
           s.currentSource = source;
         });

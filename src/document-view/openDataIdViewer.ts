@@ -12,7 +12,7 @@ export const openDataIdViewer = async (
     return;
   }
 
-  const blob = await DatasState.dataIdToBlob(dataId);
+  const blob = await DatasState.getData(dataId);
   if (!blob) {
     return AppEvents.dispatchEvent(
       "error",

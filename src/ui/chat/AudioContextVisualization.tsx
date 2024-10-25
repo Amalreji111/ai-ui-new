@@ -16,7 +16,8 @@ export const AudioContextVisualization = memo(
   ({
     sourceId = crypto.randomUUID(),
     style,
-    audioContext,
+    // audioContext,
+    analyzerNode,
     getSource,
     fftSize = 2048,
     color = "green",
@@ -25,7 +26,8 @@ export const AudioContextVisualization = memo(
     color?: string;
     fftSize?: number;
     style?: CSSProperties;
-    audioContext: AudioContext | undefined;
+    // audioContext: AudioContext | undefined;
+    analyzerNode: AnalyserNode | undefined;
     // source: () => AudioBufferSourceNode | undefined;
     getSource: () =>
       | MediaStreamAudioSourceNode
@@ -39,25 +41,23 @@ export const AudioContextVisualization = memo(
         return;
       }
       const ctx = canvas.getContext("2d");
-      if (!ctx) {
+      if (!ctx || !analyzerNode) {
         return;
       }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       // const { audioContext } = getTtsState();
       // const audioContext = getAudioContext();
       // const audioContext = new AudioContext();
-      if (!audioContext) {
-        console.log("NO AC");
-        // ctx.fillStyle = "green";
-        // ctx.fillRect(0, 0, canvas.width, canvas.height);
-        return;
-      }
+      // if (!audioContext) {
+      //   console.log("NO AC");
+      //   // ctx.fillStyle = "green";
+      //   // ctx.fillRect(0, 0, canvas.width, canvas.height);
+      //   return;
+      // }
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const analyzer = audioContext.createAnalyser();
-      // analyzer.fftSize = 2048;
-      // analyzer.fftSize = 1024;
-      analyzer.fftSize = fftSize;
-      const dataArray = new Uint8Array(analyzer.frequencyBinCount / 2);
+      // const analyzer = audioContext.createAnalyser();
+      // analyzer.fftSize = fftSize;
+      const dataArray = new Uint8Array(analyzerNode.frequencyBinCount / 2);
       const width = canvas.width / dataArray.length;
       const bars: Bar[] = Arrays.from(dataArray.length).map((_, i) => ({
         i,
@@ -76,10 +76,10 @@ export const AudioContextVisualization = memo(
           const currentSource = getSource();
           // const { currentSource } = getTtsState();
           if (currentSource) {
-            currentSource.connect(analyzer);
+            currentSource.connect(analyzerNode);
           }
           ctx.clearRect(0, 0, canvas.width, canvas.height);
-          analyzer.getByteFrequencyData(dataArray);
+          analyzerNode.getByteFrequencyData(dataArray);
 
           for (const bar of bars) {
             const { i } = bar;

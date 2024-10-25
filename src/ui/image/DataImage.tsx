@@ -1,7 +1,7 @@
 import { Bytes, Caches, isDefined, type ByteLike } from "@mjtdev/engine";
-import { Datas } from "ai-worker-common";
 import { useEffect, useRef } from "react";
 import { useAppState } from "../../state/app/AppState";
+import { DatasState } from "../../state/data/DatasState";
 import { useUserState } from "../../state/user/UserState";
 
 const DATA_IMAGE_CACHE =
@@ -24,15 +24,12 @@ export const DataImage = (
     if (dataId) {
       DATA_IMAGE_CACHE.get(dataId, async () => {
         try {
-          const resp = await Datas.getRemoteData({
-            id: dataId,
-            authToken,
-            homeBaseUrl,
-          });
-          if (!resp.ok) {
-            throw new Error(`unable to get remote data for image: ${dataId}`);
+          const blob = await DatasState.getData(dataId);
+          if (!blob) {
+            console.error(`no data for image: ${dataId}`);
+            return;
           }
-          return URL.createObjectURL(await resp.blob());
+          return URL.createObjectURL(blob);
         } catch (error) {
           console.log(`error fetching image: ${dataId} `, error);
           return;

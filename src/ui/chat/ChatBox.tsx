@@ -45,7 +45,8 @@ export const ChatBox = memo(
     const MIN_AVATAR_SHOW_HEIGHT_PX = 800;
     const [windowHeight, setWindowHeight] = useState(0);
     const { modes } = AppModes.useAppModesAndParams();
-    const { audioContext: ttsAudioContext } = getTtsState();
+    // const { audioContext: ttsAudioContext, analyserNode } = getTtsState();
+    const {  analyserNode } = getTtsState();
     const { appearance } = useAppState();
 
     const ttsSpeaking = useIsTtsSpeaking();
@@ -79,18 +80,15 @@ export const ChatBox = memo(
     const [greetingVideo, setGreetingVideo] = useState<ByteLike | undefined>(
       undefined
     );
+    const [avatar3d, setAvatar3d] = useState<ByteLike | undefined>(undefined);
     useEffect(() => {
       if (isDefined(aiCharacter?.imageDataId)) {
-        Datas.getRemoteData({
-          id: aiCharacter.imageDataId,
-          ...getHomeAuth(),
-        }).then(async (resp) => {
-          if (!resp.ok) {
-            return;
-          }
-          const blob = await resp.blob();
-          const { videoPack } =
-            await AppImages.pngToTavernCardAndVoiceSample(blob);
+        DatasState.getData(aiCharacter.imageDataId).then(async (blob) => {
+          const { videoPack, avatar3d } =
+            await AppImages.pngToTavernCardAndVoiceSample(blob, {
+              extraExtractions: ["videoPack", "avatar3d"],
+            });
+          setAvatar3d(avatar3d);
           if (isDefined(videoPack)) {
             const videos = AppVideos.videoPackToVideoRecords(videoPack);
             setGreetingVideo(videos["greeting"]);
@@ -98,7 +96,7 @@ export const ChatBox = memo(
           }
         });
         if (isDefined(greetingAppVideo)) {
-          DatasState.dataIdToBlob(greetingAppVideo.dataId).then((blob) =>
+          DatasState.getData(greetingAppVideo.dataId).then((blob) =>
             setGreetingVideo(blob)
           );
           return;
@@ -112,6 +110,7 @@ export const ChatBox = memo(
         imageStyle={{ maxWidth: "4em" }}
         character={aiCharacter}
         video={greetingVideo}
+        avatar3d={avatar3d}
       />
     ) : undefined;
     return (
@@ -187,7 +186,8 @@ export const ChatBox = memo(
                 <AudioContextVisualization
                   // TODO how to get TTS audio context using react state?
                   // audioContext={audioPlayer.getAudioContext()}
-                  audioContext={ttsAudioContext}
+                  // audioContext={ttsAudioContext}
+                  analyzerNode={analyserNode}
                   color={audioVisualizationColor}
                   getSource={() => getTtsState().currentSource}
                   key={`${chat.id}-tts-visualization-${ttsSpeaking}`}

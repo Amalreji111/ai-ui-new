@@ -7,4 +7,5 @@ export const [useTtsState, updateTtsState, getTtsState] = createState({
   currentText: undefined as string | undefined,
   lastText: undefined as string | undefined,
   audioContext: undefined as undefined | AudioContext,
+  analyserNode: undefined as undefined | AnalyserNode,
 });

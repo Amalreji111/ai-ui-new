@@ -7,6 +7,7 @@ import { DatasState } from "../../state/data/DatasState";
 import { getUserState } from "../../state/user/UserState";
 import { switchActiveGroup } from "../../state/user/switchActiveGroup";
 import { AppMessagesState } from "../../state/ws/AppMessagesState";
+import { Returns } from "../../state/data-object/Returns";
 
 export const updateAppCharacter = async (
   decomposedAppCharacter: DecomposedAppCharacter | undefined
@@ -37,71 +38,56 @@ export const updateAppCharacter = async (
     voiceSample: decomposedAppCharacter.voiceSample,
     activeGroupId: decomposedAppCharacter.activeGroupId,
     videos: decomposedAppCharacter.videos,
+    avatar3d: decomposedAppCharacter.avatar3d,
   });
 
-  await DatasState.putBlob({
-    blob: imageBlob,
-    id: imageDataId,
+  console.log("updateAppCharacter imageBlob", imageBlob);
+
+  // await DatasState.putBlob({
+  //   blob: imageBlob,
+  //   id: imageDataId,
+  // });
+
+  const returnId = Returns.addReturnListener({
+    onReturn: async (value) => {
+      console.log("updateAppCharacter: return from putting image", value);
+      DataObjectStates.upsertDataObject({
+        objectType: "app-character",
+        parentId: userId,
+        draft: imagedCharacter,
+      });
+
+      if (isDefined(decomposedAppCharacter.activeGroupId)) {
+        await switchActiveGroup({
+          subjectId: imagedCharacter.id,
+          activeId: decomposedAppCharacter.activeGroupId,
+        });
+      }
+
+      // TODO HACK invalidating worker caches on character access update
+      AppMessagesState.dispatch({
+        type: "app:invalidateCaches",
+        detail: undefined,
+      });
+    },
+    maxWaitMs: 60_000,
   });
+  const imageBytes = await Bytes.toArrayBuffer(imageBlob);
+  console.log("updateAppCharacter imageBytes", imageBytes);
+  AppMessagesState.dispatch({
+    type: "data:put",
+    detail: {
+      id: imageDataId,
+      data: imageBytes,
+      returnId,
+      contentType: "image/png",
+    },
+  });
+
+  // AppMessagesState.
 
   console.log(
     `updateAppCharacter: updating character: ${imagedCharacter.id}`,
     imagedCharacter
   );
-  DataObjectStates.upsertDataObject({
-    objectType: "app-character",
-    parentId: userId,
-    draft: imagedCharacter,
-  });
-
-  if (isDefined(decomposedAppCharacter.activeGroupId)) {
-    await switchActiveGroup({
-      subjectId: imagedCharacter.id,
-      activeId: decomposedAppCharacter.activeGroupId,
-    });
-  }
-
-  // delete others
-  // const { videos = {} } = decomposedAppCharacter;
-  // const greetingVideo = videos["greeting"];
-  // if (isDefined(greetingVideo)) {
-  //   console.log("saving greeting video");
-  //   const others = await DataObjectStates.getChildDataObjects(
-  //     decomposedAppCharacter.character.id,
-  //     "app-video",
-  //     "greeting"
-  //   );
-
-  //   others.forEach((other) => {
-  //     DatasState.deleteDataId(other.dataId);
-  //     DataObjectStates.deleteDataObject(other.id);
-  //   });
-  //   const dataId = uniqueId("data");
-  //   const blob = Bytes.toBlob(greetingVideo, "video/mp4");
-  //   await DatasState.putBlob({ id: dataId, blob });
-  //   DataObjectStates.upsertDataObject({
-  //     draft: { dataId },
-  //     objectType: "app-video",
-  //     parentId: decomposedAppCharacter.character.id,
-  //     key: "greeting",
-  //   });
-  // } else {
-  //   const vids = await DataObjectStates.getChildDataObjects(
-  //     decomposedAppCharacter.character.id,
-  //     "app-video",
-  //     "greeting"
-  //   );
-  //   console.log("deleting vids from character", vids);
-  //   for (const vid of vids) {
-  //     console.log("deleting vid from character", vid);
-  //     await DatasState.deleteDataId(vid.dataId);
-  //     await DataObjectStates.deleteDataObject(vid.id);
-  //   }
-  // }
-
-  // TODO HACK invalidating worker caches on character access update
-  AppMessagesState.dispatch({
-    type: "app:invalidateCaches",
-    detail: undefined,
-  });
 };

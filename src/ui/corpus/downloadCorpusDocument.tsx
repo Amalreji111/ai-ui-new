@@ -1,22 +1,19 @@
 import { BrowserFiles } from "@mjtdev/engine";
 import type { CorpusDocument } from "ai-worker-common";
-import { Datas } from "ai-worker-common";
+import { AppEvents } from "../../event/AppEvents";
 import { getDataObject } from "../../state/data-object/DataObjectStates";
-import { getUserState } from "../../state/user/UserState";
-import { getAppState } from "../../state/app/AppState";
+import { DatasState } from "../../state/data/DatasState";
 
 export const downloadCorpusDocument = async (documentId: string) => {
   const doc = await getDataObject<CorpusDocument>(documentId);
   if (!doc || !doc.dataId) {
     return;
   }
-  const { authToken } = getUserState();
-  const { aiBaseUrl: homeBaseUrl } = getAppState();
-  const resp = await Datas.getRemoteData({
-    id: doc.dataId,
-    authToken,
-    homeBaseUrl,
-  });
-  const blob = await resp.blob();
+  const blob = await DatasState.getData(doc.dataId);
+  if (!blob) {
+    AppEvents.dispatchEvent("toast", `no document for id: ${doc.dataId}`);
+    return;
+  }
+
   BrowserFiles.writeFileBrowser(doc?.name ?? documentId, blob);
 };

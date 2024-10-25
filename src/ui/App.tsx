@@ -1,7 +1,7 @@
 import { isDefined, isUndefined, Reacts } from "@mjtdev/engine";
+import { APP_FRONTS } from "../app-front/APP_FRONTS";
 import { getAppModesAndParams } from "../state/location/getAppModesAndParams";
 import { findAppContainer } from "./findAppContainer";
-import { APP_FRONTS } from "../app-front/APP_FRONTS";
 
 export const App = async () => {
   const container = findAppContainer();
@@ -12,6 +12,7 @@ export const App = async () => {
   if (window.location.pathname === "/playground") {
     return Reacts.render(APP_FRONTS["playground"], document.body, container);
   }
+
   const { modes, hashParams } = getAppModesAndParams();
   if (modes.includes("overlay")) {
     return Reacts.render(APP_FRONTS["overlay"], document.body, container);

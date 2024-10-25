@@ -13,7 +13,7 @@ export const duplicateCharacter = async (id: string) => {
     return;
   }
   const { imageDataId } = character;
-  const imgBlob = await DatasState.dataIdToBlob(imageDataId);
+  const imgBlob = await DatasState.getData(imageDataId);
   const dupImageDataId = imgBlob ? uniqueId("data") : undefined;
 
   if (dupImageDataId && imgBlob) {

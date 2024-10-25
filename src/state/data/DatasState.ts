@@ -1,17 +1,7 @@
-import { Apps, Datas } from "ai-worker-common";
+import { Datas } from "ai-worker-common";
+import { Returns } from "../data-object/Returns";
 import { getHomeAuth } from "../getHomeAuth";
-
-export const dataIdToBlob = async (dataId: string | undefined) => {
-  if (!dataId) {
-    return undefined;
-  }
-  const resp = await Datas.getRemoteData({ id: dataId, ...getHomeAuth() });
-  if (!resp) {
-    Apps.error(resp);
-    return undefined;
-  }
-  return resp.blob();
-};
+import { AppMessagesState } from "../ws/AppMessagesState";
 
 export const deleteDataId = async (dataId: string | undefined) => {
   if (!dataId) {
@@ -48,8 +38,42 @@ export const putData = async ({
   });
 };
 
+export const getData = (
+  id: string | undefined,
+  options: Partial<{
+    maxWaitMs: number;
+  }> = {}
+) => {
+  const error = new Error(`timeout getting ${id}`);
+  const { maxWaitMs = 60 * 2 * 1000 } = options;
+  return new Promise<Blob | undefined>((resolve, reject) => {
+    if (!id) {
+      return resolve(undefined);
+    }
+    const returnId = Returns.addReturnListener<{
+      data: ArrayBuffer;
+      contentType: string;
+    }>({
+      onReturn: async (msg) => {
+        console.log("Return", msg);
+        const { data } = msg;
+        const blob = new Blob([data], { type: msg.contentType });
+        resolve(blob);
+      },
+      onTimeout: () => {
+        reject(error);
+      },
+      maxWaitMs,
+    });
+    AppMessagesState.dispatch({
+      type: "data:get",
+      detail: { returnId, id },
+    });
+  });
+};
+
 export const DatasState = {
-  dataIdToBlob,
+  getData,
   deleteDataId,
   putData,
   putBlob,

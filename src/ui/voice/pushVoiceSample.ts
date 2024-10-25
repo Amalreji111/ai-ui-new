@@ -1,8 +1,8 @@
 import type { AppVoice } from "ai-worker-common";
-import { Apps, Datas } from "ai-worker-common";
+import { Apps } from "ai-worker-common";
 import { AppEvents } from "../../event/AppEvents";
-import { getAppState } from "../../state/app/AppState";
 import { DataObjectStates } from "../../state/data-object/DataObjectStates";
+import { DatasState } from "../../state/data/DatasState";
 import { getUserState } from "../../state/user/UserState";
 import { pushTtsCloningSample } from "../../tts/pushTtsCloningSample";
 import {
@@ -54,20 +54,14 @@ export const pushVoiceSample = async (
     return;
   }
 
-  const { aiBaseUrl: homeBaseUrl } = getAppState();
   const { authToken } = getUserState();
   if (!authToken) {
     return Apps.error("pushVoiceSample: no authToken");
   }
-  const dataResp = await Datas.getRemoteData({
-    id: dataId,
-    authToken,
-    homeBaseUrl,
-  });
-  if (!dataResp.ok) {
-    return AppEvents.dispatchEvent("error", dataResp);
+  const blob = await DatasState.getData(dataId);
+  if (!blob) {
+    return AppEvents.dispatchEvent("error", `No data: ${dataId}`);
   }
-  const blob = await dataResp.blob();
 
   const pushResp = await pushTtsCloningSample(voiceId, blob);
   if (!pushResp.ok) {
