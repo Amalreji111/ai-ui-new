@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 2024-10-28
+- bumped avatar3d to get reduced dist build size ([92ca898](https://github.com/AIPL-labs/ai-ui/commit/92ca89883af8e063dc88a3b7c584409af12ee1ba)) by Matt Taylor
+
 ## 2024-10-25
 - fix-merge-conflict ([bcacea8](https://github.com/AIPL-labs/ai-ui/commit/bcacea81e9610e261132252435918aad49a984cb)) by Matt Taylor
 - Merge branch 'master' of github.com:AIPL-labs/ai-ui ([60f1197](https://github.com/AIPL-labs/ai-ui/commit/60f11975322fa08f1d1a62ec6f623e1d6b370fe9)) by Matt Taylor
