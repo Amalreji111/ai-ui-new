@@ -2,6 +2,7 @@
 
 
 ## 2024-10-28
+- use new URL embedding for 3D avatar ([84d97ff](https://github.com/AIPL-labs/ai-ui/commit/84d97ff1a81142901ae8e3172c4013452c299ca2)) by Matt Taylor
 - bumped avatar3d to get reduced dist build size ([92ca898](https://github.com/AIPL-labs/ai-ui/commit/92ca89883af8e063dc88a3b7c584409af12ee1ba)) by Matt Taylor
 
 ## 2024-10-25
