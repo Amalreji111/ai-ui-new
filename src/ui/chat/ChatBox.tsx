@@ -46,7 +46,7 @@ export const ChatBox = memo(
     const [windowHeight, setWindowHeight] = useState(0);
     const { modes } = AppModes.useAppModesAndParams();
     // const { audioContext: ttsAudioContext, analyserNode } = getTtsState();
-    const {  analyserNode } = getTtsState();
+    const { analyserNode } = getTtsState();
     const { appearance } = useAppState();
 
     const ttsSpeaking = useIsTtsSpeaking();
@@ -80,15 +80,15 @@ export const ChatBox = memo(
     const [greetingVideo, setGreetingVideo] = useState<ByteLike | undefined>(
       undefined
     );
-    const [avatar3d, setAvatar3d] = useState<ByteLike | undefined>(undefined);
     useEffect(() => {
       if (isDefined(aiCharacter?.imageDataId)) {
         DatasState.getData(aiCharacter.imageDataId).then(async (blob) => {
-          const { videoPack, avatar3d } =
-            await AppImages.pngToTavernCardAndVoiceSample(blob, {
-              extraExtractions: ["videoPack", "avatar3d"],
-            });
-          setAvatar3d(avatar3d);
+          const { videoPack } = await AppImages.pngToTavernCardAndVoiceSample(
+            blob,
+            {
+              extraExtractions: ["videoPack"],
+            }
+          );
           if (isDefined(videoPack)) {
             const videos = AppVideos.videoPackToVideoRecords(videoPack);
             setGreetingVideo(videos["greeting"]);
@@ -109,8 +109,8 @@ export const ChatBox = memo(
         hoverActions={["Chat With {char}"]}
         imageStyle={{ maxWidth: "4em" }}
         character={aiCharacter}
+        show3dAvatar={true}
         video={greetingVideo}
-        avatar3d={avatar3d}
       />
     ) : undefined;
     return (

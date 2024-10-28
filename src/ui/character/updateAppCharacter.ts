@@ -3,11 +3,10 @@ import type { AppCharacter, DecomposedAppCharacter } from "ai-worker-common";
 import { AppImages, uniqueId } from "ai-worker-common";
 import { AppEvents } from "../../event/AppEvents";
 import { DataObjectStates } from "../../state/data-object/DataObjectStates";
-import { DatasState } from "../../state/data/DatasState";
+import { Returns } from "../../state/data-object/Returns";
 import { getUserState } from "../../state/user/UserState";
 import { switchActiveGroup } from "../../state/user/switchActiveGroup";
 import { AppMessagesState } from "../../state/ws/AppMessagesState";
-import { Returns } from "../../state/data-object/Returns";
 
 export const updateAppCharacter = async (
   decomposedAppCharacter: DecomposedAppCharacter | undefined
@@ -38,15 +37,9 @@ export const updateAppCharacter = async (
     voiceSample: decomposedAppCharacter.voiceSample,
     activeGroupId: decomposedAppCharacter.activeGroupId,
     videos: decomposedAppCharacter.videos,
-    avatar3d: decomposedAppCharacter.avatar3d,
   });
 
   console.log("updateAppCharacter imageBlob", imageBlob);
-
-  // await DatasState.putBlob({
-  //   blob: imageBlob,
-  //   id: imageDataId,
-  // });
 
   const returnId = Returns.addReturnListener({
     onReturn: async (value) => {

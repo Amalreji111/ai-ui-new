@@ -78,10 +78,6 @@ export const CharacterEditor = ({
     Record<string, ByteLike | undefined>
   >({});
 
-  const [resultAvatar3d, setResultAvatar3d] = useState<ByteLike | undefined>(
-    undefined
-  );
-
   useEffect(() => {
     if (!character.imageDataId) {
       Images.toBlob(DEFAULT_CHAR_URL).then((blob) => {
@@ -91,20 +87,16 @@ export const CharacterEditor = ({
     }
     DatasState.getData(character.imageDataId).then(async (blob) => {
       setResultImage(blob);
-      const { voiceSample, videoPack, avatar3d } =
+      const { voiceSample, videoPack } =
         await AppImages.pngToTavernCardAndVoiceSample(blob, {
-          extraExtractions: ["avatar3d", "videoPack", "voiceSample"],
+          extraExtractions: ["videoPack", "voiceSample"],
         });
-      console.log("avatar3d", avatar3d);
       if (isDefined(voiceSample)) {
         setResultVoiceSample(voiceSample.slice(0));
       }
       if (isDefined(videoPack)) {
         const videos = AppVideos.videoPackToVideoRecords(videoPack);
         setResultVideos(videos);
-      }
-      if (isDefined(avatar3d)) {
-        setResultAvatar3d(avatar3d);
       }
     });
   }, [character.id, character.imageDataId]);
@@ -289,10 +281,17 @@ export const CharacterEditor = ({
       >
         <Avatar3dCharacterEditorContent
           character={resultCharacter}
+          value={resultCharacter.card.data.extensions?.avatar3dUrl}
           onChange={(value) => {
-            setResultAvatar3d(value);
+            setResultCharacter(
+              produce(resultCharacter, (r) => {
+                r.card.data.extensions = {
+                  ...(r.card.data.extensions ?? {}),
+                  avatar3dUrl: value,
+                };
+              })
+            );
           }}
-          value={resultAvatar3d}
         />
       </Tabs.Content>
     ),
@@ -728,7 +727,6 @@ export const CharacterEditor = ({
                     voiceSample: resultVoiceSample,
                     activeGroupId: resultActiveGroupId,
                     videos: resultVideos,
-                    avatar3d: resultAvatar3d,
                   })
                 }
               >
