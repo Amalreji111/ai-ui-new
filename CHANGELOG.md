@@ -2,6 +2,7 @@
 
 
 ## 2024-11-08
+- pizza-demo as default app-front ([94756a7](https://github.com/AIPL-labs/ai-ui/commit/94756a70dce5e6569b711b754a6561ffcd905812)) by Matt Taylor
 - bumped avatar-3d version, fixed audiocontext bug for avatar3d, added avatar3d component props to CharacterAvatar ([294eced](https://github.com/AIPL-labs/ai-ui/commit/294ecedabadfbf6de60ddeed4c6bae671e64c8bc)) by Matt Taylor
 
 ## 2024-10-28
