@@ -65,15 +65,13 @@
     "@storybook/test": "^8.2.9",
     "storybook": "^8.2.9"
   },
-  "peerDependencies": {
-  },
+  "peerDependencies": {},
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@lunapaint/png-codec": "^0.2.0",
+    "@mjtdev/avatar-3d": "https://github.com/matthewjosephtaylor/avatar-3d#2024.11.8-1700",
     "@mjtdev/engine": "https://github.com/matthewjosephtaylor/mjtdev-engine#2024.10.25-1350",
-    "ai-worker-common": "https://github.com/AIPL-labs/ai-worker-common#2024.10.28-1208",
-    "@mjtdev/avatar-3d": "https://github.com/matthewjosephtaylor/avatar-3d#2024.10.28-0933",
     "@monaco-editor/react": "^4.6.0",
     "@mui/material": "^6.0.1",
     "@radix-ui/react-collapsible": "^1.1.1",
@@ -82,6 +80,7 @@
     "@radix-ui/themes": "^3.1.3",
     "@ricky0123/vad-web": "^0.0.18",
     "@sinclair/typebox": "^0.33.7",
+    "ai-worker-common": "https://github.com/AIPL-labs/ai-worker-common#2024.10.28-1208",
     "babel-plugin-styled-components": "^2.1.4",
     "character-card-utils": "^2.0.3",
     "easing-utils": "^1.0.0",

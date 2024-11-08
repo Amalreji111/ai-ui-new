@@ -46,8 +46,9 @@ export const ChatBox = memo(
     const [windowHeight, setWindowHeight] = useState(0);
     const { modes } = AppModes.useAppModesAndParams();
     // const { audioContext: ttsAudioContext, analyserNode } = getTtsState();
-    const { analyserNode } = getTtsState();
+    const { audioContext } = getTtsState();
     const { appearance } = useAppState();
+    const ttsAnalyzer = audioContext?.createAnalyser();
 
     const ttsSpeaking = useIsTtsSpeaking();
 
@@ -111,6 +112,11 @@ export const ChatBox = memo(
         character={aiCharacter}
         show3dAvatar={true}
         video={greetingVideo}
+        analyserNode={ttsAnalyzer}
+        // avatar3dCanvasWidth={100}
+        // avatar3dCanvasHeight={500}
+        // avatar3dCameraOptions={{ radius: 2 }}
+        // style={{ height: "50vh", width: "30vw" }}
       />
     ) : undefined;
     return (
@@ -187,7 +193,8 @@ export const ChatBox = memo(
                   // TODO how to get TTS audio context using react state?
                   // audioContext={audioPlayer.getAudioContext()}
                   // audioContext={ttsAudioContext}
-                  analyzerNode={analyserNode}
+                  // analyzerNode={analyserNode}
+                  analyzerNode={ttsAnalyzer}
                   color={audioVisualizationColor}
                   getSource={() => getTtsState().currentSource}
                   key={`${chat.id}-tts-visualization-${ttsSpeaking}`}

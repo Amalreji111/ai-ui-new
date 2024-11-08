@@ -1,13 +1,27 @@
 import { Avatar3dGltf } from "@mjtdev/avatar-3d";
-import { Colors, Objects, isDefined, type ByteLike } from "@mjtdev/engine";
-import { Badge, Card, Flex, Separator, Text } from "@radix-ui/themes";
+import {
+  Animates,
+  Colors,
+  Maths,
+  Objects,
+  isDefined,
+  type ArcRotateCameraOptions,
+  type ByteLike,
+} from "@mjtdev/engine";
+import {
+  Badge,
+  Card,
+  CardProps,
+  Flex,
+  Separator,
+  Text,
+} from "@radix-ui/themes";
 import type { AppCharacter } from "ai-worker-common";
 import { AnimatePresence, motion } from "framer-motion";
 import type { CSSProperties } from "react";
-import { memo, useState } from "react";
-import { useTtsState } from "../../tts/TtsState";
+import { memo, useEffect, useState } from "react";
+import { getTtsState, useTtsState } from "../../tts/TtsState";
 import { DEFAULT_CHAR_URL } from "../DEFAULT_CHAR_URL";
-import { stringifyEq } from "../chat/stringifyEq";
 import { AppButtonGroup } from "../common/AppButtonGroup";
 import { AppContextMenu } from "../common/AppContextMenu";
 import { CorpusDocumentListButton } from "../corpus/CorpusDocumentListButton";
@@ -17,6 +31,21 @@ import { idToColor } from "../visual/idToColor";
 import { VideoPlayer } from "./VideoPlayer";
 import type { CharacterAction } from "./characterToActions";
 import { characterToActions } from "./characterToActions";
+import { AudioContextVisualization } from "../chat/AudioContextVisualization";
+import { Ttss } from "../../tts/Ttss";
+// import { stringifyEq } from "../chat/stringifyEq";
+
+export const stringifyEq2 = (a: any, b: any) => {
+  if (a instanceof AnalyserNode || b instanceof AnalyserNode) {
+    return a === b;
+  }
+
+  const result = JSON.stringify(a) === JSON.stringify(b);
+  // if (!result) {
+  //   console.log("stringifyEq", { a, b });
+  // }
+  return result;
+};
 
 export const CharacterAvatar = memo(
   ({
@@ -36,7 +65,12 @@ export const CharacterAvatar = memo(
     hoverActions,
     buttonActions = [],
     onClick = () => {},
-  }: {
+    analyserNode,
+    avatar3dCanvasWidth,
+    avatar3dCanvasHeight,
+    avatar3dCameraOptions,
+    ...rest
+  }: CardProps & {
     video?: ByteLike;
     enableDocumentDrop?: boolean;
     showHoverButtons?: boolean;
@@ -48,15 +82,18 @@ export const CharacterAvatar = memo(
     showNotes?: boolean;
     showContextMenu?: boolean;
     show3dAvatar?: boolean;
+    avatar3dCanvasWidth?: number;
+    avatar3dCanvasHeight?: number;
     imageStyle?: CSSProperties;
     nameStyle?: CSSProperties;
     style?: CSSProperties;
     character: AppCharacter | undefined;
     onClick?: (characterId: string) => void;
+    analyserNode?: AnalyserNode;
+    avatar3dCameraOptions?: ArcRotateCameraOptions;
   }) => {
     const [pointerOver, setPointerOver] = useState(false);
     const [videoEnded, setVideoEnded] = useState(false);
-    const { analyserNode } = useTtsState();
 
     const backgroundColor = Colors.from("black").alpha(0.5).toString();
     const nameDisplay = showName ? (
@@ -65,6 +102,33 @@ export const CharacterAvatar = memo(
     if (!character) {
       return <></>;
     }
+
+    useEffect(() => {
+      if (!character?.card?.data?.extensions?.avatar3dUrl) {
+        return;
+      }
+      // if (currentSource && analyserNode) {
+      //   currentSource.connect(analyserNode);
+      // }
+
+      const ac = Animates.create({
+        ticker: () => {
+          const currentSource = getTtsState().currentSource;
+          if (currentSource && analyserNode) {
+            currentSource.connect(analyserNode);
+          }
+        },
+      });
+
+      // Ttss.toggleTts().then(async () => {
+      //   console.log("TTS toggled to regain audiocontext");
+      //   await Ttss.toggleTts();
+      //   console.log("TTS toggled back");
+      // });
+      return () => {
+        ac.destroy();
+      };
+    }, [analyserNode, character]);
 
     const tags = character?.card?.data?.tags ?? [];
 
@@ -141,6 +205,7 @@ export const CharacterAvatar = memo(
             whiteSpace: "nowrap",
             ...style,
           }}
+          {...rest}
         >
           <Flex gap="2" direction={"column"}>
             <Flex>
@@ -169,10 +234,19 @@ export const CharacterAvatar = memo(
                   >
                     {show3dAvatar &&
                     character.card.data.extensions?.avatar3dUrl ? (
-                      <Flex style={{ maxHeight: "40vh", overflow: "auto" }}>
+                      <Flex
+                        style={{
+                          maxHeight: "40vh",
+                          overflow: "auto",
+                          ...style,
+                        }}
+                      >
                         <Avatar3dGltf
                           path={character.card.data.extensions.avatar3dUrl}
                           analyserNode={analyserNode}
+                          canvasWidth={avatar3dCanvasWidth}
+                          canvasHeight={avatar3dCanvasHeight}
+                          cameraOptions={avatar3dCameraOptions}
                           // showPhonemes={true}
                           // showControls={true}
                         />
@@ -256,5 +330,5 @@ export const CharacterAvatar = memo(
       </AppContextMenu>
     );
   },
-  stringifyEq
+  stringifyEq2
 );

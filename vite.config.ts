@@ -46,15 +46,15 @@ export default defineConfig({
     // __APP_FRONT__: JSON.stringify("power-user"),
 
     // AI-UI Production settings
-    __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
-    __PAP_ID__: JSON.stringify(
-      "access-point-1725571260862-23455f95-1253-4dfe-96e3-952ac6af647c"
-    ),
-    __APP_FRONT__: JSON.stringify("pizza-demo"),
+    // __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
+    // __PAP_ID__: JSON.stringify(
+    //   "access-point-1725571260862-23455f95-1253-4dfe-96e3-952ac6af647c"
+    // ),
+    // __APP_FRONT__: JSON.stringify("pizza-demo"),
 
     // AI-Workfroce Production settings
-    // __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
-    // __PAP_ID__: undefined,
-    // __APP_FRONT__: JSON.stringify("power-user"),
+    __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
+    __PAP_ID__: undefined,
+    __APP_FRONT__: JSON.stringify("power-user"),
   },
 });
