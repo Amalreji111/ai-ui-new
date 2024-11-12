@@ -79,10 +79,10 @@ const useFaceDetection = () => {
     const loadModels = async () => {
       try {
         await Promise.all([
-          faceapi.nets.tinyFaceDetector.loadFromUri('/ai-ui/models'),
-          faceapi.nets.faceLandmark68Net.loadFromUri('/ai-ui/models'),
-          faceapi.nets.faceRecognitionNet.loadFromUri('/ai-ui/models'),
-          faceapi.nets.faceExpressionNet.loadFromUri('/ai-ui/models'),
+          faceapi.nets.tinyFaceDetector.loadFromUri('/ai-ui-new/models'),
+          faceapi.nets.faceLandmark68Net.loadFromUri('/ai-ui-new/models'),
+          faceapi.nets.faceRecognitionNet.loadFromUri('/ai-ui-new/models'),
+          faceapi.nets.faceExpressionNet.loadFromUri('/ai-ui-new/models'),
         ]);
         setIsLoading(false);
         startVideo();
