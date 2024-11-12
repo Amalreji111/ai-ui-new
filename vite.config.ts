@@ -49,7 +49,7 @@ export default defineConfig({
  // __PAP_ID__: JSON.stringify(
  //   "access-point-1725571260862-23455f95-1253-4dfe-96e3-952ac6af647c"
  // ),
- __PAP_ID__:JSON.stringify("access-point-1731108469504-7d3dfd30-7487-4149-8b5b-24239497e20c"),
+ __PAP_ID__:JSON.stringify("access-point-1731369542080-9e8d483a-2613-482c-b726-2b7f2ec3b1be"),
 
  // __APP_FRONT__: JSON.stringify("pizza-demo"),
 
