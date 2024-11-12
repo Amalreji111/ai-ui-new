@@ -53,6 +53,7 @@
     "typescript": "^5.2.2",
     "vite": "^5.2.8",
     "wrangler": "^3.27.0",
+    "face-api.js": "^0.22.2",
     "@chromatic-com/storybook": "^1.6.1",
     "@storybook/addon-essentials": "^8.2.9",
     "@storybook/addon-interactions": "^8.2.9",
