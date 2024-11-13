@@ -34,7 +34,7 @@ import { characterToActions } from "./characterToActions";
 import { AudioContextVisualization } from "../chat/AudioContextVisualization";
 import { Ttss } from "../../tts/Ttss";
 // import { stringifyEq } from "../chat/stringifyEq";
-
+import "./styles.css"
 export const stringifyEq2 = (a: any, b: any) => {
   if (a instanceof AnalyserNode || b instanceof AnalyserNode) {
     return a === b;

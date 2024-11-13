@@ -1,0 +1,4 @@
+.rt-Card:where(.rt-variant-surface) {
+    --card-border-width: 0px !important;
+    --card-background-color: transparent !important;
+  }

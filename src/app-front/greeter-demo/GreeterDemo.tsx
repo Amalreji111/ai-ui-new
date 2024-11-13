@@ -383,7 +383,7 @@ const IntelligageScreen: React.FC = memo(() => {
             {/* <AssistantImage> */}
             {avatar}
             {/* </AssistantImage> */}
-            {/* <Overlay></Overlay> */}
+            <Overlay></Overlay>
           </ImageContainer>
 
           {/* <TypingOverlay text="The issue you're facing with TypeScript not recognizing the image module (Ai.png) is likely related to missing type declarations for importing non-code assets like images. TypeScript doesn't know how to handle imports of non-code files" /> */}
