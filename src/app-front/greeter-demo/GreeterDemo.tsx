@@ -4,7 +4,7 @@ import styled,{ keyframes } from 'styled-components';
 // Import your assets here
 import girlImage from './assets/Ai.png';
 import waveImage from './assets/wave.png';
-import qrCodeImage from './assets/QR Code.png';
+import qrCodeImage from './assets/qrcode.png';
 import intelliageImage from './assets/intelligage.png';
 import { hideLoadingScreen } from '../../ui/hideLoadingScreen';
 import { useIsTtsSpeaking } from '../../tts/useIsTtsSpeaking';
@@ -33,6 +33,8 @@ import { useUserState } from '../../state/user/UserState';
 import { useAvailableVoices } from '../../ui/useAvailableVoices';
 import useFaceDetection from './hooks/faceDetection';
 import useScreenAttention from './hooks/screenAttention';
+import Lottie from "react-lottie"
+import animationData from "./assets/wave-animation.json"
 // width: 100%;
 interface StatusDotProps {
   status: 'online' | 'offline';
@@ -57,18 +59,13 @@ const Frame = styled.div`
 `;
 
 const WaveAnimation = styled.div`
-  position: relative;
-  top: 0;
-  left: 0;
+  
   width: 100%;
   height: 35%;
   opacity: 0.8;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const Content = styled.div`
@@ -88,6 +85,7 @@ const ImageContainer = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
+  background:transparent;
   margin-bottom: 2%; /* Spacing between image and footer */
   
   @media (max-width: 768px) {
@@ -157,18 +155,18 @@ const Overlay = styled.div`
 `;
 
 const QRCode = styled.img`
-  width: 72px;
-  height: 72px;
+  width: 200px;
+  height: 200px;
 
   @media (max-width: 768px) {
-    width: 60px;
-    height: 60px;
+    width: 200px;
+    height: 200px;
   }
 `;
 
 const QRText = styled.p`
   color: white;
-  font-size: 20px;
+  font-size: 30px;
   line-height: 1.4;
   margin: 0;
   white-space: nowrap;
@@ -320,6 +318,12 @@ const IntelligageScreen: React.FC = memo(() => {
             width: "100%",
             height: "100%"
            }}
+           style={{
+            backgroundColor:"transparent",
+            borderWidth:0
+
+           }}
+           
           character={aiChar}
           showName={false}
           show3dAvatar={true}
@@ -355,7 +359,20 @@ const IntelligageScreen: React.FC = memo(() => {
     <Frame>
       <Container>
         <WaveAnimation>
-          <img src={waveImage} alt="Wave Animation" />
+        <Lottie 
+          speed={0.5}
+	    options={{
+        loop: true,
+        autoplay: true,
+        animationData: animationData,
+        rendererSettings: {
+          preserveAspectRatio: "xMidYMid slice"
+        }
+      }}
+        height={400}
+        // width={400}
+      />
+          {/* <img src={waveImage} alt="Wave Animation" /> */}
         </WaveAnimation>
 
         <Content style={{ position: "relative" }}>
