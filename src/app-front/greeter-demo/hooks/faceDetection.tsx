@@ -1,198 +1,182 @@
 import { useEffect, useRef, useState } from 'react';
 import * as faceapi from 'face-api.js';
+import { useCurrentChat } from "../../../ui/chat/useCurrentChat";
+import { ChatStates } from '../../../state/chat/ChatStates';
+
+interface FaceDetectionState {
+  isModelLoading: boolean;
+  isStreamActive: boolean;
+  faceDetected: boolean;
+  lastFaceDetectionTime: number;
+  error: string | null;
+}
+
+const getQueryParam = (paramName: string, defaultValue: number): number => {
+  if (typeof window === 'undefined') return defaultValue;
+  const params = new URLSearchParams(window.location.search);
+  const value = params.get(paramName);
+  return value ? parseInt(value, 10) : defaultValue;
+};
+let lastFaceDetectionState=false
+const GREETING_COOLDOWN = getQueryParam("greetingCooldownTimer", 15) * 1000; // Minimum time (ms) between greetings
 
 const useFaceDetection = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<any>(null);
-  const [faceDetected, setFaceDetected] = useState<boolean>(false);
-  const [isLookingAtScreen, setIsLookingAtScreen] = useState<boolean>(false);
-  const [faceAttributes, setFaceAttributes] = useState<any>(null);
-  const [stableFaceDetected, setStableFaceDetected] = useState<boolean>(false); // New debounced state
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Reference for debounce timeout
+  const lastGreetingTimeRef = useRef<number>(0); // Use ref for last greeting time
+  const [state, setState] = useState<FaceDetectionState>({
+    isModelLoading: true,
+    isStreamActive: false,
+    faceDetected: false,
+    lastFaceDetectionTime: 0,
+    error: null
+  });
 
-  // Constants for gaze detection
-  const ROTATION_THRESHOLD = 15;
-  const NORMAL_VECTOR = { x: 0, y: 0, z: 1 };
+  const { messages, chat } = useCurrentChat();
+  
+  const faceDetectionTimer = getQueryParam("faceDetectionTimer", 15);
 
-  const calculateFaceRotation = (landmarks: any) => {
-    const leftEye = landmarks.getLeftEye()[0];
-    const rightEye = landmarks.getRightEye()[0];
-    const nose = landmarks.getNose()[0];
-    
-    const eyeVector = {
-      x: rightEye.x - leftEye.x,
-      y: rightEye.y - leftEye.y,
-      z: 0,
-    };
-    
-    const noseVector = {
-      x: nose.x - leftEye.x,
-      y: nose.y - leftEye.y,
-      z: 0,
-    };
-    
-    const normalVector = {
-      x: eyeVector.y * noseVector.z - eyeVector.z * noseVector.y,
-      y: eyeVector.z * noseVector.x - eyeVector.x * noseVector.z,
-      z: eyeVector.x * noseVector.y - eyeVector.y * noseVector.x,
-    };
-    
-    const dotProduct = normalVector.x * NORMAL_VECTOR.x + 
-                      normalVector.y * NORMAL_VECTOR.y + 
-                      normalVector.z * NORMAL_VECTOR.z;
-    
-    const magnitudeA = Math.sqrt(normalVector.x ** 2 + normalVector.y ** 2 + normalVector.z ** 2);
-    const magnitudeB = Math.sqrt(NORMAL_VECTOR.x ** 2 + NORMAL_VECTOR.y ** 2 + NORMAL_VECTOR.z ** 2);
-    
-    const angle = Math.acos(dotProduct / (magnitudeA * magnitudeB)) * (180 / Math.PI);
-    
-    return angle;
-  };
-
-  const checkEyeDirection = (landmarks: any) => {
-    const leftEye = landmarks.getLeftEye();
-    const rightEye = landmarks.getRightEye();
-    
-    const leftEAR = getEyeAspectRatio(leftEye);
-    const rightEAR = getEyeAspectRatio(rightEye);
-    
-    return leftEAR > 0.2 && rightEAR > 0.2;
-  };
-
-  const getEyeAspectRatio = (eye: any) => {
-    const v1 = Math.sqrt(
-      Math.pow(eye[1].x - eye[5].x, 2) + Math.pow(eye[1].y - eye[5].y, 2)
-    );
-    const v2 = Math.sqrt(
-      Math.pow(eye[2].x - eye[4].x, 2) + Math.pow(eye[2].y - eye[4].y, 2)
-    );
-    
-    const h = Math.sqrt(
-      Math.pow(eye[0].x - eye[3].x, 2) + Math.pow(eye[0].y - eye[3].y, 2)
-    );
-    
-    return (v1 + v2) / (2.0 * h);
-  };
+  const lastMessageTimestamp = messages?.length > 0
+    ? new Date(messages[messages.length - 1]?.createTime).getTime()
+    : 0;
+  const timeSinceLastMessage = Date.now() - lastMessageTimestamp;
 
   useEffect(() => {
+    let isMounted = true;
+
     const loadModels = async () => {
       try {
         await Promise.all([
           faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
           faceapi.nets.faceLandmark68Net.loadFromUri('/models'),
-          faceapi.nets.faceRecognitionNet.loadFromUri('/models'),
-          faceapi.nets.faceExpressionNet.loadFromUri('/models'),
         ]);
-        setIsLoading(false);
-        startVideo();
-      } catch (err) {
-        setError(err);
-      }
-    };
-
-    const startVideo = () => {
-      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ 
-          video: {
-            width: 640,  // Set specific dimensions
-            height: 480
-          } 
-        })
-          .then((stream) => {
-            if (videoRef.current) {
-              videoRef.current.srcObject = stream;
-              videoRef.current.play();
-              videoRef.current.onloadeddata = () => {
-                processVideo();
-              };
-            }
-          })
-          .catch((err) => {
-            setError(err);
-          });
-      } else {
-        setError(new Error("getUserMedia not supported on this browser"));
-      }
-    };
-
-    const processVideo = () => {
-      const video = videoRef.current;
-
-      if (video) {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
         
-        const intervalId = setInterval(async () => {
-          try {
-            const detections = await faceapi
-              .detectAllFaces(video, new faceapi.TinyFaceDetectorOptions())
-              .withFaceLandmarks()
-              .withFaceExpressions();
-
-            if (detections.length > 0) {
-              const detection = detections[0];
-              setFaceDetected(true);
-              setFaceAttributes(detection);
-
-              const faceRotation = calculateFaceRotation(detection.landmarks);
-              const eyesOpen = checkEyeDirection(detection.landmarks);
-              
-              setIsLookingAtScreen(
-                faceRotation < ROTATION_THRESHOLD && eyesOpen
-              );
-            } else {
-              setFaceDetected(false);
-              setIsLookingAtScreen(false);
-            }
-          } catch (err) {
-            console.error('Face detection error:', err);
-          }
-        }, 100);
-
-        return () => clearInterval(intervalId);
+        if (isMounted) {
+          setState(prev => ({ ...prev, isModelLoading: false }));
+        }
+      } catch (error) {
+        if (isMounted) {
+          setState(prev => ({
+            ...prev,
+            isModelLoading: false,
+            error: "Failed to load face detection models"
+          }));
+        }
       }
     };
 
     loadModels();
+    return () => { isMounted = false; };
+  }, []);
 
-    return () => {
-      if (videoRef.current) {
-        const stream = videoRef.current.srcObject;
-        if (stream) {
-          const tracks = (stream as MediaStream).getTracks();
-          tracks.forEach((track) => track.stop());
-          videoRef.current.srcObject = null;
+  useEffect(() => {
+    let isMounted = true;
+    let detectionInterval: NodeJS.Timer | null = null;
+
+    const startVideo = async () => {
+      if (state.isModelLoading || !videoRef.current) return;
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: 640,
+            height: 480,
+          }
+        });
+
+        if (!isMounted) {
+          stream.getTracks().forEach(track => track.stop());
+          return;
+        }
+
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+          setState(prev => ({ ...prev, isStreamActive: true, error: null }));
+
+          detectionInterval = setInterval(async () => {
+            if (!videoRef.current || !isMounted) return;
+
+            try {
+              const detections = await faceapi
+                .detectAllFaces(
+                  videoRef.current, 
+                  new faceapi.TinyFaceDetectorOptions({
+                    inputSize: 320,      // Reduced for better performance
+                    scoreThreshold: 0.3  // Reduced threshold for better detection in low light
+                  })
+                )
+                .withFaceLandmarks();
+
+              const faceDetected = detections.length > 0;
+              const currentTime = Date.now();
+
+              if (isMounted) {
+                setState(prev => ({
+                  ...prev,
+                  faceDetected,
+                  lastFaceDetectionTime: faceDetected ? currentTime : prev.lastFaceDetectionTime
+                }));
+              }
+            } catch (error) {
+              console.error('Face detection error:', error);
+            }
+          }, 100);
+        }
+      } catch (error) {
+        if (isMounted) {
+          setState(prev => ({
+            ...prev,
+            isStreamActive: false,
+            error: "Camera access denied or not available"
+          }));
         }
       }
     };
-  }, []);
 
-  // Debounce effect for faceDetected
-  useEffect(() => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
-
-    debounceTimeoutRef.current = setTimeout(() => {
-      setStableFaceDetected(faceDetected);
-    }, 500); // Adjust debounce duration as needed
+    startVideo();
 
     return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
+      isMounted = false;
+      if (detectionInterval) clearInterval(detectionInterval as any);
+      if (videoRef.current?.srcObject) {
+        const stream = videoRef.current.srcObject as MediaStream;
+        stream.getTracks().forEach(track => track.stop());
       }
     };
-  }, [faceDetected]);
+  }, [state.isModelLoading]);
+
+  useEffect(() => {
+    const currentTime = Date.now();
+    const timeSinceLastGreeting = currentTime - lastGreetingTimeRef.current;
+    const hasEnoughTimePassed = timeSinceLastGreeting > GREETING_COOLDOWN;
+    const noRecentMessages = timeSinceLastMessage > faceDetectionTimer * 1000;
+    // console.table({
+    //   hasEnoughTimePassed,
+    //   noRecentMessages
+    // })
+   
+
+    // Only trigger greeting if all conditions are met and greeting hasn't been triggered yet
+    if (state.faceDetected && hasEnoughTimePassed && noRecentMessages&&lastFaceDetectionState!==state.faceDetected) {
+      // Set the greeting time ref to prevent triggering again in the cooldown period
+      lastGreetingTimeRef.current = currentTime;
+
+      // Trigger greeting logic (this could be calling a function to display a greeting message)
+      console.log("Greeting the user!");
+      ChatStates.addChatMessage({ chat, text: "Hi" });
+    }
+    if(lastFaceDetectionState!==state.faceDetected){
+      lastFaceDetectionState = state.faceDetected
+    }
+  }, [state.faceDetected, timeSinceLastMessage, faceDetectionTimer]);
 
   return {
     videoRef,
-    isLoading,
-    error,
-    faceDetected, // Use debounced value for stable status
-    isLookingAtScreen:stableFaceDetected,
-    faceAttributes,
+    isModelLoading: state.isModelLoading,
+    isStreamActive: state.isStreamActive,
+    faceDetected: state.faceDetected,
+    error: state.error,
+    timeSinceLastMessage,
+    faceDetectionTimer,
   };
 };
 

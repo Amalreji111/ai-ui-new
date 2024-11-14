@@ -35,6 +35,7 @@ import useFaceDetection from './hooks/faceDetection';
 import useScreenAttention from './hooks/screenAttention';
 import Lottie from "react-lottie"
 import animationData from "./assets/wave-animation.json"
+import { useSearchParams } from 'react-router-dom';
 // width: 100%;
 interface StatusDotProps {
   status: 'online' | 'offline';
@@ -285,25 +286,25 @@ const TypingOverlay = memo(
 );
 
 const IntelligageScreen: React.FC = memo(() => {
-  const { chat, messages } = useCurrentChat();
+  const { chat } = useCurrentChat();
   const { ttsEnabled } = useAppState();
-  const {  parseResult } = useTranscription();
+  const {  parseResult,lastMessageTimestamp } = useTranscription();
   const characters = DataObjectStates.useDataObjectsById<"app-character">(
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
 
   )
-  const {
-    videoRef,
-    isLoading,
-    error,
-    faceDetected,
-    isLookingAtScreen,
-    faceAttributes,
-  } = useFaceDetection();
-  const attentionState = useScreenAttention(faceDetected)
+  const { faceDetected ,videoRef} = useFaceDetection();
+
+  // const attentionState = useScreenAttention(faceDetected)
   let previousAttentionState = false;
   const { audioContext } = getTtsState();
   const ttsAnalyzer = audioContext?.createAnalyser();
+  const timeSinceLastMessage = Date.now() - lastMessageTimestamp;
+  //access query param using 
+  const searchParams = new URLSearchParams(window.location.search);
+
+  // Example: Get a query parameter named "id"
+  // const faceDetectionTimer = parseInt(searchParams.get("face-detection-timer")??'15');
 
   const aiChar = chat?.aiCharacterId?characters.find(x=>x.id===chat.aiCharacterId):undefined
   const character=chat?.userCharacterId
@@ -347,6 +348,14 @@ const IntelligageScreen: React.FC = memo(() => {
     Ttss.enableTts();
   }
   
+  // // console.log("shouldGreet>>",shouldGreet)
+  // useEffect(() => {
+  //   if (shouldGreet) {
+  //     ChatStates.addChatMessage({ chat, text: "Hello!" });
+  //   }
+  // }, [shouldGreet]);
+
+
   // speak({
   //   text:"Hey there!",
     
@@ -376,7 +385,7 @@ const IntelligageScreen: React.FC = memo(() => {
         </WaveAnimation>
 
         <Content style={{ position: "relative" }}>
-        <StatusIndicator isOnline={isLookingAtScreen}/>
+        <StatusIndicator isOnline={faceDetected}/>
 
           <ImageContainer >
             {/* <AssistantImage src={girlImage} alt="AI Assistant" /> */}
@@ -404,7 +413,7 @@ const IntelligageScreen: React.FC = memo(() => {
           pointerEvents: 'none',
         }}
       />
-            {isLookingAtScreen && <div>Looking at the screen!</div>}
+            {/* {isLookingAtScreen && <div>Looking at the screen!</div>} */}
         <Footer>
           <LogoContainer>
             <img src={intelliageImage} alt="Intelligage" />

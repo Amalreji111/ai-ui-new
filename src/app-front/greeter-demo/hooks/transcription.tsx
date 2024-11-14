@@ -6,8 +6,7 @@ import { useCurrentChat } from "../../../ui/chat/useCurrentChat";
 
 const useTranscription = () => {
   const { chat, messages } = useCurrentChat();
-
-  const { speaking: asrSpeaking } = useCustomAsrState(); // Assuming this hook manages ASR state
+  const { speaking: asrSpeaking } = useCustomAsrState();
   const [transcription, setTranscription] = useState("");
 
   // Filter chat messages and build realAndImaginedMessages array
@@ -21,23 +20,26 @@ const useTranscription = () => {
     const speakerMessage = asrSpeaking
       ? AppObjects.create("chat-message", {
           characterId: chat?.userCharacterId,
-          content: {
-            type: "text",
-            parts: [],
-          },
+          content: { type: "text", parts: [] },
         })
-      : AppObjects.create("chat-message", { characterId: chat.aiCharacterId });
+      : AppObjects.create("chat-message", {
+          characterId: chat.aiCharacterId,
+        });
 
     realAndImaginedMessages = [...orderedMessages, speakerMessage].filter(Boolean);
   }
 
-  // Extract the latest assistant message as a transcript
+  // Extract the latest assistant message and its timestamp
   const transcript = listChatMessages({
     messageId: chat?.currentMessageId,
     messages,
   })
     .filter((n) => n.role === "assistant")
     ?.at(-1);
+
+  const lastMessageTimestamp = messages.length > 0
+    ? new Date(messages[messages.length - 1]?.createTime).getTime()
+    : 0;
 
   let parseResult = null;
   if (transcript) {
@@ -52,6 +54,7 @@ const useTranscription = () => {
     setTranscription,
     realAndImaginedMessages,
     parseResult,
+    lastMessageTimestamp,
   };
 };
 
