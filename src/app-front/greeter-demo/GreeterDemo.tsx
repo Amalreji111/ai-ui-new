@@ -36,6 +36,9 @@ import useScreenAttention from './hooks/screenAttention';
 import Lottie from "react-lottie"
 import animationData from "./assets/wave-animation.json"
 import { useSearchParams } from 'react-router-dom';
+import FaceIcon from './components/FaceIcon';
+import ListeningIcon from './components/ListeningIcon';
+import { getAsrState } from '../../asr-webkit/AsrState';
 // width: 100%;
 interface StatusDotProps {
   status: 'online' | 'offline';
@@ -236,6 +239,9 @@ const StatusDot =  styled.div<StatusDotProps>`
   border-radius: 50%;
   background-color: ${({ status }) => (status === 'online' ? 'green' : 'red')};
 `;
+const StatusIconContainer = styled.div`
+display: flex;
+`
 interface StatusIndicatorProps {
   isOnline: boolean;
 }
@@ -293,11 +299,16 @@ const IntelligageScreen: React.FC = memo(() => {
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
 
   )
+ const {speaking} =getCustomAsrState()
+
   const { faceDetected ,videoRef} = useFaceDetection();
 
   // const attentionState = useScreenAttention(faceDetected)
   let previousAttentionState = false;
   const { audioContext } = getTtsState();
+  const ttsSpeaking = useIsTtsSpeaking();
+
+  
   const ttsAnalyzer = audioContext?.createAnalyser();
   const timeSinceLastMessage = Date.now() - lastMessageTimestamp;
   //access query param using 
@@ -383,9 +394,13 @@ const IntelligageScreen: React.FC = memo(() => {
       />
           {/* <img src={waveImage} alt="Wave Animation" /> */}
         </WaveAnimation>
-
         <Content style={{ position: "relative" }}>
-        <StatusIndicator isOnline={faceDetected}/>
+
+        {/* <StatusIndicator isOnline={faceDetected}/> */}
+        <StatusIconContainer>
+          <FaceIcon isActive={faceDetected} />
+          <ListeningIcon isActive={speaking} />
+          </StatusIconContainer>
 
           <ImageContainer >
             {/* <AssistantImage src={girlImage} alt="AI Assistant" /> */}
