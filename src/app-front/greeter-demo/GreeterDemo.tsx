@@ -26,7 +26,6 @@ import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 const Container = styled.div`
   height: 100%;
   background: linear-gradient(180deg, #5046E5 0%, #3832A0 50%, #000000 100%); /* Gradient flows from top to bottom, dark at footer */
-  overflow: hidden;
   margin:40px;
   display: flex;
   flex-direction: column;
@@ -121,7 +120,13 @@ const QRContainer = styled.div`
   display: flex;
   align-items: center;
   position:absolute;
-  right: 0;
+  border-radius: 10px;
+  margin-right: 10px;
+  right: -50;
+  padding-right: 45px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius:0px ;
+
   align-self: end;
   background:#FFFFFF1A;
   gap: 12px;
@@ -138,18 +143,20 @@ const Overlay = styled.div`
 `;
 
 const QRCode = styled.img`
-  width: 200px;
-  height: 200px;
+  width: 125px;
+  height: 125px;
+  border-radius: 20px;
+  padding:16px;
 
   @media (max-width: 768px) {
-    width: 200px;
-    height: 200px;
+    width: 125px;
+    height: 125px;
   }
 `;
 
 const QRText = styled.p`
   color: white;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1.4;
   margin: 0;
   white-space: nowrap;
