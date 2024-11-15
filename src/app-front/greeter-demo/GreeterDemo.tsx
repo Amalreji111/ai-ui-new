@@ -1,48 +1,27 @@
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import styled,{ keyframes } from 'styled-components';
 
 // Import your assets here
-import girlImage from './assets/Ai.png';
-import waveImage from './assets/wave.png';
 import qrCodeImage from './assets/qrcode.png';
 import intelliageImage from './assets/intelligage.png';
-import { hideLoadingScreen } from '../../ui/hideLoadingScreen';
 import { useIsTtsSpeaking } from '../../tts/useIsTtsSpeaking';
 import { getTtsState } from '../../tts/TtsState';
-import { ChatTextEntry } from '../../ui/chat/entry/ChatTextEntry';
 import { useCurrentChat } from '../../ui/chat/useCurrentChat';
-import { getCustomAsrState, useCustomAsrState } from '../../asr-custom/updateCustomAsrState';
-import { ChatStates } from '../../state/chat/ChatStates';
-import { AppEvents } from '../../event/AppEvents';
-import { AppTextAreaRef } from '../../ui/common/AppTextArea';
-import { startHearing } from '../../asr-webkit/startHearing';
-import { stopHearing } from '../../asr-webkit/stopHearing';
+import { getCustomAsrState } from '../../asr-custom/updateCustomAsrState';
 import { AsrCustoms } from '../../asr-custom/AsrCustoms';
-import { listChatMessages } from '../../chat/listChatMessages';
-import { AiFunctions, AppObjects, Chats } from 'ai-worker-common';
-import { isDefined } from '@mjtdev/engine';
-import { speak } from '../../tts/speak';
 import { Ttss } from '../../tts/Ttss';
 import { useAppState } from '../../state/app/AppState';
-import { interruptTts } from '../../tts/custom/interruptTts';
 import useTranscription from './hooks/transcription';
-import { DataObjectStates, useChildDataObjects } from '../../state/data-object/DataObjectStates';
+import { DataObjectStates } from '../../state/data-object/DataObjectStates';
 import { CharacterAvatar } from '../../ui/character/CharacterAvatar';
-import { speakLineBrowser, speakLinesBrowser } from '../../tts/speakLineBrowser';
-import { useUserState } from '../../state/user/UserState';
-import { useAvailableVoices } from '../../ui/useAvailableVoices';
 import useFaceDetection from './hooks/faceDetection';
-import useScreenAttention from './hooks/screenAttention';
 import Lottie from "react-lottie"
 import animationData from "./assets/wave-animation.json"
-import { useSearchParams } from 'react-router-dom';
 import FaceIcon from './components/FaceIcon';
 import ListeningIcon from './components/ListeningIcon';
-import { getAsrState } from '../../asr-webkit/AsrState';
+import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 // width: 100%;
-interface StatusDotProps {
-  status: 'online' | 'offline';
-}
+
 
 const Container = styled.div`
   height: 100%;
@@ -233,22 +212,10 @@ const StyledText = styled.span`
   text-align: center;
   padding: 0 10px;
 `;
-const StatusDot =  styled.div<StatusDotProps>`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: ${({ status }) => (status === 'online' ? 'green' : 'red')};
-`;
+
 const StatusIconContainer = styled.div`
 display: flex;
 `
-interface StatusIndicatorProps {
-  isOnline: boolean;
-}
-
-const StatusIndicator: React.FC<StatusIndicatorProps> = ({ isOnline }) => (
-  <StatusDot status={isOnline ? 'online' : 'offline'} />
-);
 
 const TypingOverlay = memo(
   ({ text, typingSpeed = 50 }: { text: string; typingSpeed?: number }) => {
@@ -294,7 +261,7 @@ const TypingOverlay = memo(
 const IntelligageScreen: React.FC = memo(() => {
   const { chat } = useCurrentChat();
   const { ttsEnabled } = useAppState();
-  const {  parseResult,lastMessageTimestamp } = useTranscription();
+  const {  parseResult,lastMessageTimestamp ,setTranscription} = useTranscription();
   const characters = DataObjectStates.useDataObjectsById<"app-character">(
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
 
@@ -304,15 +271,20 @@ const IntelligageScreen: React.FC = memo(() => {
   const { faceDetected ,videoRef} = useFaceDetection();
 
   // const attentionState = useScreenAttention(faceDetected)
-  let previousAttentionState = false;
   const { audioContext } = getTtsState();
-  const ttsSpeaking = useIsTtsSpeaking();
+  
+
+  useEffect(() => {
+    if (speaking) {
+      setTranscription("")
+    }
+  }, [speaking]);
 
   
   const ttsAnalyzer = audioContext?.createAnalyser();
-  const timeSinceLastMessage = Date.now() - lastMessageTimestamp;
   //access query param using 
   const searchParams = new URLSearchParams(window.location.search);
+  const animate = searchParams.get('animate') === 'true';
 
   // Example: Get a query parameter named "id"
   // const faceDetectionTimer = parseInt(searchParams.get("face-detection-timer")??'15');
@@ -346,31 +318,13 @@ const IntelligageScreen: React.FC = memo(() => {
         />
       ) : undefined;
   
-      // const lookingAtScreen=useMemo(()=>isLookingAtScreen,[isLookingAtScreen])
-    
-      // useEffect(() => {
-      //   if (attentionState.hasGreeted === false) {
-      //     ChatStates.addChatMessage({ chat, text: "Hi" });
-      //   }
-      // }, [attentionState.hasGreeted]);
       
   
   if (!ttsEnabled) {
     Ttss.enableTts();
   }
   
-  // // console.log("shouldGreet>>",shouldGreet)
-  // useEffect(() => {
-  //   if (shouldGreet) {
-  //     ChatStates.addChatMessage({ chat, text: "Hello!" });
-  //   }
-  // }, [shouldGreet]);
 
-
-  // speak({
-  //   text:"Hey there!",
-    
-  // })
 
 
   AsrCustoms.startCustomAsr();
@@ -381,6 +335,7 @@ const IntelligageScreen: React.FC = memo(() => {
         <WaveAnimation>
         <Lottie 
           speed={0.5}
+          isStopped={!animate}
 	    options={{
         loop: true,
         autoplay: true,
@@ -392,26 +347,20 @@ const IntelligageScreen: React.FC = memo(() => {
         height={400}
         // width={400}
       />
-          {/* <img src={waveImage} alt="Wave Animation" /> */}
         </WaveAnimation>
         <Content style={{ position: "relative" }}>
 
-        {/* <StatusIndicator isOnline={faceDetected}/> */}
         <StatusIconContainer>
           <FaceIcon isActive={faceDetected} />
           <ListeningIcon isActive={speaking} />
           </StatusIconContainer>
 
           <ImageContainer >
-            {/* <AssistantImage src={girlImage} alt="AI Assistant" /> */}
-            {/* <AssistantImage> */}
             {avatar}
-            {/* </AssistantImage> */}
             <Overlay></Overlay>
           </ImageContainer>
 
-          {/* <TypingOverlay text="The issue you're facing with TypeScript not recognizing the image module (Ai.png) is likely related to missing type declarations for importing non-code assets like images. TypeScript doesn't know how to handle imports of non-code files" /> */}
-          <TypingOverlay text={parseResult?.strippedText ?? ""} />
+          <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
         </Content>
         <video 
         ref={videoRef}
@@ -428,7 +377,6 @@ const IntelligageScreen: React.FC = memo(() => {
           pointerEvents: 'none',
         }}
       />
-            {/* {isLookingAtScreen && <div>Looking at the screen!</div>} */}
         <Footer>
           <LogoContainer>
             <img src={intelliageImage} alt="Intelligage" />
@@ -443,9 +391,6 @@ const IntelligageScreen: React.FC = memo(() => {
             </QRText>
           </QRContainer>
         </Footer>
-        {/* {
-        chat? <ChatTextEntry chat={chat} />: null
-      } */}
       </Container>
     </Frame>
   );

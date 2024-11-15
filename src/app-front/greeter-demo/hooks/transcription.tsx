@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { listChatMessages } from "../../../chat/listChatMessages";
 import { AiFunctions, AppObjects, Chats } from "ai-worker-common";
 import { useCustomAsrState } from "../../../asr-custom/updateCustomAsrState";
