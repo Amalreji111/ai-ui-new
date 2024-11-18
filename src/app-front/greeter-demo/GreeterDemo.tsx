@@ -63,7 +63,7 @@ const ImageContainer = styled.div`
   position: absolute; /* Changed from absolute */
   width: 100%;
   height: auto;
-  top:0;
+  top:-70;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -225,7 +225,7 @@ display: flex;
 `
 
 const TypingOverlay = memo(
-  ({ text, typingSpeed = 50 }: { text: string; typingSpeed?: number }) => {
+  ({ text, typingSpeed = 30 }: { text: string; typingSpeed?: number }) => {
     const [displayedText, setDisplayedText] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
