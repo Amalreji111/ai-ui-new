@@ -20,6 +20,9 @@ import animationData from "./assets/wave-animation.json"
 import FaceIcon from './components/FaceIcon';
 import ListeningIcon from './components/ListeningIcon';
 import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
+import { useFaceDetectionNew } from './hooks/facedetection-new';
+import { ChatStates } from '../../state/chat/ChatStates';
+import { getQueryParamAsNumber } from './utils/utils';
 // width: 100%;
 
 
@@ -225,7 +228,7 @@ display: flex;
 `
 
 const TypingOverlay = memo(
-  ({ text, typingSpeed = 30 }: { text: string; typingSpeed?: number }) => {
+  ({ text, typingSpeed = 50 }: { text: string; typingSpeed?: number }) => {
     const [displayedText, setDisplayedText] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -269,18 +272,52 @@ const IntelligageScreen: React.FC = memo(() => {
   const { chat } = useCurrentChat();
   const { ttsEnabled } = useAppState();
   const {  parseResult,lastMessageTimestamp ,setTranscription} = useTranscription();
+  const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
+
+  const { webcamRef, boundingBox, isLoading, detected, facesDetected } = useFaceDetectionNew({
+    minDetectionConfidence: 0.5,
+    model: "short"
+  });
+  const noFaceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const isCooldown = useRef<boolean>(false);
+  const GREETING_TIMEOUT = noFaceDetectionTimer*1000; // 10 seconds
   const characters = DataObjectStates.useDataObjectsById<"app-character">(
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
 
   )
  const {speaking} =getCustomAsrState()
 
-  const { faceDetected ,videoRef} = useFaceDetection();
+  // const { faceDetected ,videoRef} = useFaceDetection();
 
   // const attentionState = useScreenAttention(faceDetected)
   const { audioContext } = getTtsState();
-  
+  const greetUser = () => {
+    console.log("Hello! New face detected!");
+    ChatStates.addChatMessage({ chat, text: "Hi" });
 
+    // Your greeting logic goes here
+  };
+  useEffect(() => {
+    if (!detected) {
+      // If a timeout already exists, clear it to avoid multiple timers
+      if (noFaceTimeout.current) clearTimeout(noFaceTimeout.current);
+
+      // Start a new timeout for 10 seconds when no face is detected
+      noFaceTimeout.current = setTimeout(() => {
+        console.log("No face detected for 10 seconds. Ready to greet a new face.");
+        isCooldown.current = false; // Reset the cooldown status
+      }, GREETING_TIMEOUT);
+    } else {
+      // If a face is detected and cooldown is false, greet the user
+      if (!isCooldown.current) {
+        greetUser();
+        isCooldown.current = true; // Enable cooldown to prevent multiple greetings
+      }
+
+      // Clear the timeout if a face is detected
+      if (noFaceTimeout.current) clearTimeout(noFaceTimeout.current);
+    }
+  }, [detected]);
   useEffect(() => {
     if (speaking) {
       setTranscription("")
@@ -358,7 +395,7 @@ const IntelligageScreen: React.FC = memo(() => {
         <Content style={{ position: "relative" }}>
 
         <StatusIconContainer>
-          <FaceIcon isActive={faceDetected} />
+          <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />
           </StatusIconContainer>
 
@@ -370,7 +407,7 @@ const IntelligageScreen: React.FC = memo(() => {
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
         </Content>
         <video 
-        ref={videoRef}
+        ref={webcamRef}
         autoPlay 
         playsInline
         muted
