@@ -7,7 +7,10 @@ export default defineConfig({
   build: {
     // sourcemap: true,
     sourcemap: false,
-    commonjsOptions: {},
+    commonjsOptions: {
+      include: [/linked-dep/, /node_modules/],
+
+    },
     target: "es2022",
     rollupOptions: {
       input: {
@@ -16,7 +19,9 @@ export default defineConfig({
       },
     },
   },
-
+  optimizeDeps: {
+    include: ['linked-dep',' node_modules/@mediapipe/*'],
+  },
   base: "",
   css: {
     modules: {

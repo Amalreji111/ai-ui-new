@@ -20,7 +20,8 @@ import animationData from "./assets/wave-animation.json"
 import FaceIcon from './components/FaceIcon';
 import ListeningIcon from './components/ListeningIcon';
 import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
-import { useFaceDetectionNew } from './hooks/facedetection-new';
+import {  useFaceDetectionNew } from './hooks/facedetection-new';
+// import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
 import { getQueryParamAsNumber } from './utils/utils';
 // width: 100%;
@@ -228,7 +229,7 @@ display: flex;
 `
 
 const TypingOverlay = memo(
-  ({ text, typingSpeed = 50 }: { text: string; typingSpeed?: number }) => {
+  ({ text, typingSpeed = 30 }: { text: string; typingSpeed?: number }) => {
     const [displayedText, setDisplayedText] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -304,7 +305,7 @@ const IntelligageScreen: React.FC = memo(() => {
 
       // Start a new timeout for 10 seconds when no face is detected
       noFaceTimeout.current = setTimeout(() => {
-        console.log("No face detected for 10 seconds. Ready to greet a new face.");
+        console.log(`No face detected for ${noFaceDetectionTimer} seconds. Ready to greet a new face.`);
         isCooldown.current = false; // Reset the cooldown status
       }, GREETING_TIMEOUT);
     } else {
@@ -415,8 +416,8 @@ const IntelligageScreen: React.FC = memo(() => {
           position: 'absolute',
           top: 0,
           left: 0,
-          width: '1px',
-          height: '1px',
+          width: '200px',
+          height: '200px',
           opacity: 0,
           pointerEvents: 'none',
         }}

@@ -73,7 +73,7 @@
     "@emotion/styled": "^11.13.0",
     "@lunapaint/png-codec": "^0.2.0",
     "@mediapipe/camera_utils": "^0.3.1675466862",
-    "@mediapipe/face_detection": "^0.4.1646425229",
+    "@mediapipe/face_detection": "0.4",
     "@mjtdev/avatar-3d": "https://github.com/matthewjosephtaylor/avatar-3d#2024.11.8-1700",
     "@mjtdev/engine": "https://github.com/matthewjosephtaylor/mjtdev-engine#2024.10.25-1350",
     "@monaco-editor/react": "^4.6.0",
