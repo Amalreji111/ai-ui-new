@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, MutableRefObject } from 'react';
+import { convertToBoolean, getQueryParam } from '../utils/utils';
 
 interface BoundingBox {
   xCenter: number;
@@ -134,8 +135,11 @@ export const useFaceDetectionNew = (
         setIsLoading(false);
       }
     };
-
-    initializeFaceDetection();
+    const enableFacedetection =getQueryParam("enableFacedetection", "true");
+    if(convertToBoolean(enableFacedetection)){
+      initializeFaceDetection();
+    }
+    // initializeFaceDetection();
 
     return () => {
       if (camera) {
