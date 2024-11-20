@@ -229,7 +229,7 @@ display: flex;
 `
 
 const TypingOverlay = memo(
-  ({ text, typingSpeed = 30 }: { text: string; typingSpeed?: number }) => {
+  ({ text, typingSpeed = 40 }: { text: string; typingSpeed?: number }) => {
     const [displayedText, setDisplayedText] = useState("");
     const [currentIndex, setCurrentIndex] = useState(0);
     const containerRef = useRef<HTMLDivElement>(null);
