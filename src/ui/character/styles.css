@@ -2,3 +2,12 @@
     --card-border-width: 0px !important;
     --card-background-color: transparent !important;
   }
+  .radix-themes:where([data-panel-background='translucent']) {
+    --color-panel: transparent
+    --backdrop-filter-panel: blur(0px) !important;
+}
+.rt-Card:where(.rt-variant-surface)::before {
+  background-color:transparent !important;
+  -webkit-backdrop-filter: blur(0px) !important;
+  backdrop-filter: blur(0px) !important;
+}
