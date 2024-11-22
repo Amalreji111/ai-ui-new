@@ -14,11 +14,16 @@ interface UseFaceDetectionReturn {
   isLoading: boolean;
   detected: boolean;
   facesDetected: number;
+  isEnabled: boolean;
+  toggleDetection: () => void;
+  enableDetection: () => void;
+  disableDetection: () => void;
 }
 
 interface FaceDetectionOptions {
   minDetectionConfidence?: number;
   model?: 'short' | 'full';
+  initialEnabled?: boolean;
 }
 
 declare global {
@@ -37,6 +42,26 @@ export const useFaceDetectionNew = (
   const [facesDetected, setFacesDetected] = useState(0);
   const [boundingBox, setBoundingBox] = useState<BoundingBox[]>([]);
   const [modulesLoaded, setModulesLoaded] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(() => {
+    const enableFacedetection = getQueryParam("enableFacedetection", "true");
+    return options.initialEnabled ?? convertToBoolean(enableFacedetection);
+  });
+  
+  const cameraRef = useRef<any>(null);
+  const detectionRef = useRef<any>(null);
+
+  // Control functions
+  const enableDetection = () => {
+    setIsEnabled(true);
+  };
+
+  const disableDetection = () => {
+    setIsEnabled(false);
+  };
+
+  const toggleDetection = () => {
+    setIsEnabled(prev => !prev);
+  };
 
   // Load MediaPipe scripts
   useEffect(() => {
@@ -86,22 +111,19 @@ export const useFaceDetectionNew = (
       return;
     }
 
-    let faceDetection: any;
-    let camera: any;
-
     const initializeFaceDetection = async () => {
       try {
-        faceDetection = new window.FaceDetection({
+        detectionRef.current = new window.FaceDetection({
           locateFile: (file: string) => 
             `https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/${file}`
         });
 
-        faceDetection.setOptions({
+        detectionRef.current.setOptions({
           model: options.model,
           minDetectionConfidence: options.minDetectionConfidence || 0.5
         });
 
-        faceDetection.onResults((results: any) => {
+        detectionRef.current.onResults((results: any) => {
           if (results.detections) {
             const boxes: BoundingBox[] = results.detections.map((detection: any) => ({
               xCenter: detection.boundingBox.xCenter,
@@ -118,41 +140,66 @@ export const useFaceDetectionNew = (
         });
 
         if (webcamRef.current) {
-          camera = new window.Camera(webcamRef.current, {
+          cameraRef.current = new window.Camera(webcamRef.current, {
             onFrame: async () => {
-              if (webcamRef.current) {
-                await faceDetection.send({ image: webcamRef.current });
+              if (webcamRef.current && isEnabled) {
+                await detectionRef.current.send({ image: webcamRef.current });
               }
             },
             width: 640,
             height: 480
           });
 
-          await camera.start();
+          if (isEnabled) {
+            await cameraRef.current.start();
+          }
         }
       } catch (error) {
         console.error('Error initializing face detection:', error);
         setIsLoading(false);
       }
     };
-    const enableFacedetection =getQueryParam("enableFacedetection", "true");
-    if(convertToBoolean(enableFacedetection)){
-      initializeFaceDetection();
-    }
-    // initializeFaceDetection();
+
+    initializeFaceDetection();
 
     return () => {
-      if (camera) {
-        camera.stop();
+      if (cameraRef.current) {
+        cameraRef.current.stop();
       }
     };
   }, [modulesLoaded, options.minDetectionConfidence, options.model]);
+
+  // Handle enable/disable toggle
+  useEffect(() => {
+    if (!cameraRef.current) return;
+
+    const updateDetectionState = async () => {
+      try {
+        if (isEnabled) {
+          await cameraRef.current.start();
+        } else {
+          await cameraRef.current.stop();
+          setBoundingBox([]);
+          setDetected(false);
+          setFacesDetected(0);
+        }
+      } catch (error) {
+        console.error('Error updating detection state:', error);
+      }
+    };
+
+    updateDetectionState();
+  }, [isEnabled]);
 
   return {
     webcamRef,
     boundingBox,
     isLoading,
     detected,
-    facesDetected
+    facesDetected,
+    isEnabled,
+    toggleDetection,
+    enableDetection,
+    disableDetection
   };
 };

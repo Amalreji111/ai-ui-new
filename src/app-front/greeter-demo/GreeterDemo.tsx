@@ -23,7 +23,7 @@ import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 import {  useFaceDetectionNew } from './hooks/facedetection-new';
 // import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
-import { getQueryParamAsNumber } from './utils/utils';
+import { convertToBoolean, getQueryParam, getQueryParamAsNumber } from './utils/utils';
 // width: 100%;
 
 
@@ -274,20 +274,65 @@ const IntelligageScreen: React.FC = memo(() => {
   const { ttsEnabled } = useAppState();
   const {  parseResult,lastMessageTimestamp ,setTranscription} = useTranscription();
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
+  const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
+  const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
 
-  const { webcamRef, boundingBox, isLoading, detected, facesDetected } = useFaceDetectionNew({
+  const { webcamRef, boundingBox, isLoading, detected, facesDetected ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
   });
   const noFaceTimeout = useRef<NodeJS.Timeout | null>(null);
   const isCooldown = useRef<boolean>(false);
+  const faceDetectionActivationTimer = useRef<NodeJS.Timeout | null>(null);
   const GREETING_TIMEOUT = noFaceDetectionTimer*1000; // 10 seconds
   const characters = DataObjectStates.useDataObjectsById<"app-character">(
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
 
   )
  const {speaking} =getCustomAsrState()
+ const ttsSpeaking = useIsTtsSpeaking();
 
+useEffect(() => {
+  /**
+   * Logic:
+   * 1) If either TTS or speaking is active:
+   *    - Clear any existing timer
+   *    - Reset the timer ref
+   * 2) If both are inactive:
+   *    - Clear any existing timer (to avoid multiple timers)
+   *    - Start a new timer
+   *    - After timeout, enable face detection
+   */
+  
+  // Clear any existing timer first
+  if (faceDetectionActivationTimer.current) {
+    clearTimeout(faceDetectionActivationTimer.current);
+    faceDetectionActivationTimer.current = null;
+  }
+
+  // If neither TTS nor speaking is active, start the timer
+  if (!ttsSpeaking && !speaking) {
+    faceDetectionActivationTimer.current = setTimeout(() => {
+      console.log("enabling face detection");
+      enableDetection();
+    }, enableFacedetectionTimer);
+  }
+
+  // Cleanup on unmount or when dependencies change
+  return () => {
+    if (faceDetectionActivationTimer.current) {
+      clearTimeout(faceDetectionActivationTimer.current);
+      faceDetectionActivationTimer.current = null;
+    }
+  };
+}, [ttsSpeaking, speaking, enableDetection]);
+//  useEffect(() => {
+//   const enableFaceDetection = getQueryParam("enableFacedetection", "true");
+//   if (convertToBoolean(enableFaceDetection)) {
+//     enableDetection();
+//   }
+//  },[])
+ 
   // const { faceDetected ,videoRef} = useFaceDetection();
 
   // const attentionState = useScreenAttention(faceDetected)
@@ -312,6 +357,7 @@ const IntelligageScreen: React.FC = memo(() => {
       // If a face is detected and cooldown is false, greet the user
       if (!isCooldown.current) {
         greetUser();
+        disableDetection();
         isCooldown.current = true; // Enable cooldown to prevent multiple greetings
       }
 
@@ -319,11 +365,8 @@ const IntelligageScreen: React.FC = memo(() => {
       if (noFaceTimeout.current) clearTimeout(noFaceTimeout.current);
     }
   }, [detected]);
-  useEffect(() => {
-    if (speaking) {
-      setTranscription("")
-    }
-  }, [speaking]);
+
+//enable face detection if detect no voice activity for atleast 5 seconds. define seconds in a variable
 
   
   const ttsAnalyzer = audioContext?.createAnalyser();
@@ -355,7 +398,7 @@ const IntelligageScreen: React.FC = memo(() => {
            
           character={aiChar}
           showName={false}
-          show3dAvatar={true}
+          show3dAvatar={convertToBoolean(enable3dCharacter)}
           showContextMenu={false}
           enableDocumentDrop={false}
         analyserNode={ttsAnalyzer}
