@@ -14,6 +14,7 @@ interface UseFaceDetectionReturn {
   isLoading: boolean;
   detected: boolean;
   facesDetected: number;
+  isCameraActive: boolean;
   isEnabled: boolean;
   toggleDetection: () => void;
   enableDetection: () => void;
@@ -42,6 +43,7 @@ export const useFaceDetectionNew = (
   const [facesDetected, setFacesDetected] = useState(0);
   const [boundingBox, setBoundingBox] = useState<BoundingBox[]>([]);
   const [modulesLoaded, setModulesLoaded] = useState(false);
+  const [isCameraActive, setIsCameraActive] = useState(false);
   const [isEnabled, setIsEnabled] = useState(() => {
     const enableFacedetection = getQueryParam("enableFacedetection", "true");
     return options.initialEnabled ?? convertToBoolean(enableFacedetection);
@@ -133,7 +135,8 @@ export const useFaceDetectionNew = (
             }));
 
             setBoundingBox(boxes);
-            setDetected(boxes.length > 0);
+            setTimeout(() =>  setDetected(boxes.length > 0), 2000);
+           
             setFacesDetected(boxes.length);
             setIsLoading(false);
           }
@@ -152,6 +155,7 @@ export const useFaceDetectionNew = (
 
           if (isEnabled) {
             await cameraRef.current.start();
+            setIsCameraActive(true);
           }
         }
       } catch (error) {
@@ -165,6 +169,7 @@ export const useFaceDetectionNew = (
     return () => {
       if (cameraRef.current) {
         cameraRef.current.stop();
+        setIsCameraActive(false);
       }
     };
   }, [modulesLoaded, options.minDetectionConfidence, options.model]);
@@ -177,8 +182,11 @@ export const useFaceDetectionNew = (
       try {
         if (isEnabled) {
           await cameraRef.current.start();
+        setIsCameraActive(true);
+
         } else {
           await cameraRef.current.stop();
+        setIsCameraActive(false);
           setBoundingBox([]);
           setDetected(false);
           setFacesDetected(0);
@@ -196,6 +204,7 @@ export const useFaceDetectionNew = (
     boundingBox,
     isLoading,
     detected,
+    isCameraActive,
     facesDetected,
     isEnabled,
     toggleDetection,

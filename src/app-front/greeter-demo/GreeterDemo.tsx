@@ -24,6 +24,7 @@ import {  useFaceDetectionNew } from './hooks/facedetection-new';
 // import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
 import { convertToBoolean, getQueryParam, getQueryParamAsNumber } from './utils/utils';
+import CameraIcon from './components/Camera';
 // width: 100%;
 
 
@@ -277,7 +278,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
 
-  const { webcamRef, boundingBox, isLoading, detected, facesDetected ,disableDetection,enableDetection} = useFaceDetectionNew({
+  const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
   });
@@ -441,6 +442,7 @@ useEffect(() => {
         <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />
+          <CameraIcon isActive={isCameraActive} />
           </StatusIconContainer>
 
           <ImageContainer >
