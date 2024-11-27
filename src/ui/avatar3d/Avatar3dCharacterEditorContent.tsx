@@ -1,27 +1,45 @@
-import { Avatar3dGltf } from "@mjtdev/avatar-3d";
+import { Avatar3d } from "@mjtdev/avatar-3d";
 import { Flex } from "@radix-ui/themes";
 import type { AppCharacter } from "ai-worker-common";
 import { FormInputDisplay } from "../form/FormInputDisplay";
 
 export const Avatar3dCharacterEditorContent = ({
-  value,
-  onChange,
+  modelUrlValue,
+  animationUrlValue,
+  onChangeModelUrl,
+  onChangeAnimationUrl,
 }: {
   character: AppCharacter;
-  value: string | undefined;
-  onChange: (value: string) => void;
+  modelUrlValue: string | undefined;
+  animationUrlValue: string | undefined;
+  onChangeModelUrl: (value: string) => void;
+  onChangeAnimationUrl: (value: string) => void;
 }) => {
   return (
     <Flex direction={"column"} gap={"2"}>
       <FormInputDisplay
         title={"3D Model URL"}
         style={{ width: "80ch" }}
-        value={value}
-        onChange={onChange}
+        defaultValue={modelUrlValue}
+        onChange={onChangeModelUrl}
       />
-      {value && (
+      <FormInputDisplay
+        title={"Starting Animation URL"}
+        style={{ width: "80ch" }}
+        defaultValue={animationUrlValue}
+        onChange={onChangeAnimationUrl}
+      />
+      {modelUrlValue && (
         <>
-          <Avatar3dGltf path={value} />
+          <Avatar3d
+            path={modelUrlValue}
+            animationPath={animationUrlValue}
+            vrmCameraOptions={{
+              frustumSize: 1,
+              position: { x: 0, y: 1.7, z: 3 },
+              lookAt: { x: 0, y: 1.7, z: 0 },
+            }}
+          />
         </>
       )}
     </Flex>

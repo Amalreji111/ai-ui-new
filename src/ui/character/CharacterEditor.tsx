@@ -281,8 +281,21 @@ export const CharacterEditor = ({
       >
         <Avatar3dCharacterEditorContent
           character={resultCharacter}
-          value={resultCharacter.card.data.extensions?.avatar3dUrl}
-          onChange={(value) => {
+          modelUrlValue={resultCharacter.card.data.extensions?.avatar3dUrl}
+          animationUrlValue={
+            resultCharacter.card.data.extensions?.avatar3dAnimationUrl
+          }
+          onChangeAnimationUrl={(value) => {
+            setResultCharacter(
+              produce(resultCharacter, (r) => {
+                r.card.data.extensions = {
+                  ...(r.card.data.extensions ?? {}),
+                  avatar3dAnimationUrl: value,
+                };
+              })
+            );
+          }}
+          onChangeModelUrl={(value) => {
             setResultCharacter(
               produce(resultCharacter, (r) => {
                 r.card.data.extensions = {

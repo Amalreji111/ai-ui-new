@@ -1,8 +1,7 @@
-import { Avatar3dGltf } from "@mjtdev/avatar-3d";
+import { Avatar3d } from "@mjtdev/avatar-3d";
 import {
   Animates,
   Colors,
-  Maths,
   Objects,
   isDefined,
   type ArcRotateCameraOptions,
@@ -20,7 +19,7 @@ import type { AppCharacter } from "ai-worker-common";
 import { AnimatePresence, motion } from "framer-motion";
 import type { CSSProperties } from "react";
 import { memo, useEffect, useState } from "react";
-import { getTtsState, useTtsState } from "../../tts/TtsState";
+import { getTtsState } from "../../tts/TtsState";
 import { DEFAULT_CHAR_URL } from "../DEFAULT_CHAR_URL";
 import { AppButtonGroup } from "../common/AppButtonGroup";
 import { AppContextMenu } from "../common/AppContextMenu";
@@ -31,8 +30,6 @@ import { idToColor } from "../visual/idToColor";
 import { VideoPlayer } from "./VideoPlayer";
 import type { CharacterAction } from "./characterToActions";
 import { characterToActions } from "./characterToActions";
-import { AudioContextVisualization } from "../chat/AudioContextVisualization";
-import { Ttss } from "../../tts/Ttss";
 // import { stringifyEq } from "../chat/stringifyEq";
 
 export const stringifyEq2 = (a: any, b: any) => {
@@ -237,16 +234,27 @@ export const CharacterAvatar = memo(
                       <Flex
                         style={{
                           maxHeight: "40vh",
+                          maxWidth: "40vw",
                           overflow: "auto",
                           ...style,
                         }}
                       >
-                        <Avatar3dGltf
+                        <Avatar3d
                           path={character.card.data.extensions.avatar3dUrl}
                           analyserNode={analyserNode}
                           canvasWidth={avatar3dCanvasWidth}
                           canvasHeight={avatar3dCanvasHeight}
-                          cameraOptions={avatar3dCameraOptions}
+                          canvasStyle={{ maxWidth: "40vw", maxHeight: "40vh" }}
+                          gltfCameraOptions={avatar3dCameraOptions}
+                          animationPath={
+                            character.card.data.extensions.avatar3dAnimationUrl
+                          }
+                          vrmCameraOptions={{
+                            frustumSize: 0.7,
+                            position: { x: 0, y: 1.85, z: 3 },
+                            lookAt: { x: 0, y: 1.85, z: 0 },
+                          }}
+
                           // showPhonemes={true}
                           // showControls={true}
                         />

@@ -55,7 +55,6 @@ export const getData = (
       contentType: string;
     }>({
       onReturn: async (msg) => {
-        console.log("Return", msg);
         const { data } = msg;
         const blob = new Blob([data], { type: msg.contentType });
         resolve(blob);
