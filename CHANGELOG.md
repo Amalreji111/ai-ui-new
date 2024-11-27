@@ -1,6 +1,9 @@
 # Changelog
 
 
+## 2024-11-27
+- Updated Avatar3d to work with VRM models and added starting animation ([c392b4f](https://github.com/AIPL-labs/ai-ui/commit/c392b4f07777f5166c3e5c228a6cd0b994af43e2)) by Matt Taylor
+
 ## 2024-11-08
 - pizza-demo as default app-front ([94756a7](https://github.com/AIPL-labs/ai-ui/commit/94756a70dce5e6569b711b754a6561ffcd905812)) by Matt Taylor
 - bumped avatar-3d version, fixed audiocontext bug for avatar3d, added avatar3d component props to CharacterAvatar ([294eced](https://github.com/AIPL-labs/ai-ui/commit/294ecedabadfbf6de60ddeed4c6bae671e64c8bc)) by Matt Taylor
