@@ -1,0 +1,25 @@
+.rt-Card:where(.rt-variant-surface) {
+    --card-border-width: 0px !important;
+    --card-background-color: transparent !important;
+  }
+  .radix-themes:where([data-panel-background='translucent']) {
+    --color-panel: transparent
+    --backdrop-filter-panel: blur(0px) !important;
+}
+.rt-Card:where(.rt-variant-surface)::before {
+  background-color:transparent !important;
+  -webkit-backdrop-filter: blur(0px) !important;
+  backdrop-filter: blur(0px) !important;
+}
+.rt-Card:where(.rt-r-size-1) {
+    --card-padding: 0;
+    --card-border-radius: 0;
+}
+.rt-Card {
+    /* --base-card-padding-top: var(--card-padding); */
+    /* --base-card-padding-right: var(--card-padding); */
+    /* --base-card-padding-bottom: var(--card-padding); */
+    /* --base-card-padding-left: var(--card-padding); */
+    /* --base-card-border-radius: var(--card-border-radius); */
+    --base-card-border-width: transparent !important;
+}

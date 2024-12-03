@@ -1,0 +1,14 @@
+/* IconComponent.css */
+.icon {
+    font-size: 40px;
+    /* transition: color 0.3s ease; */
+  }
+  
+  .icon.active {
+    color: green;
+  }
+  
+  .icon.inactive {
+    color: red;
+  }
+  

@@ -31,7 +31,7 @@ import { VideoPlayer } from "./VideoPlayer";
 import type { CharacterAction } from "./characterToActions";
 import { characterToActions } from "./characterToActions";
 // import { stringifyEq } from "../chat/stringifyEq";
-
+import "./styles.css"
 export const stringifyEq2 = (a: any, b: any) => {
   if (a instanceof AnalyserNode || b instanceof AnalyserNode) {
     return a === b;
