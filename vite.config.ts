@@ -56,20 +56,20 @@ export default defineConfig({
  // ),
 
 //currently used betty pap
- __PAP_ID__:JSON.stringify("access-point-1731369542080-9e8d483a-2613-482c-b726-2b7f2ec3b1be"),
+//  __PAP_ID__:JSON.stringify("access-point-1731369542080-9e8d483a-2613-482c-b726-2b7f2ec3b1be"),
 
  //XMAS -pap
-//  __PAP_ID__:JSON.stringify("access-point-1732810105505-839046aa-cfba-4236-a863-7895cbf41ebf"),
+ __PAP_ID__:JSON.stringify("access-point-1732810105505-839046aa-cfba-4236-a863-7895cbf41ebf"),
  // __APP_FRONT__: JSON.stringify("pizza-demo"),
  //Greeter project config
  // __PAP_ID__:JSON.stringify("access-point-1730138425212-a96c9489-58c9-42ba-9cb4-a85e230bb408"),
  // __PAP_ID__:JSON.stringify("access-point-1729798916406-965d156a-2242-44af-9a4a-7e38de595a1f"),
  // __APP_FRONT__: JSON.stringify("ai-ui-chat"),
  //FOR XMAS DEMO
-//  __APP_FRONT__: JSON.stringify("xmas-demo"),
+ __APP_FRONT__: JSON.stringify("xmas-demo"),
 
  //BETTY DEMO
- __APP_FRONT__: JSON.stringify("betty-demo"),
+//  __APP_FRONT__: JSON.stringify("betty-demo"),
     // AI-UI Production settings
     // __HOME_BASE__: JSON.stringify("https://ai-workforce.intelligage.net"),
     __HOME_BASE__: JSON.stringify("https://ai-worker.intelligage.workers.dev"),
