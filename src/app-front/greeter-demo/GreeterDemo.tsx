@@ -23,17 +23,19 @@ import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 import {  useFaceDetectionNew } from './hooks/useFacedetection-new';
 // import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
-import { convertToBoolean, getQueryParam, getQueryParamAsNumber } from './utils/utils';
+import { convertToBoolean, getQueryParam, getQueryParamAsNumber, getValuesFromVariable } from './utils/utils';
 import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
 import { useChatSummary } from './hooks/useSummary';
+import { AppReportAnswers, Chat, Chats } from 'ai-worker-common';
+import { factsToReports } from '../../ui/chat/mind/report/factsToReports';
 // width: 100%;
 
 
 const Container = styled.div`
   height: 100%;
-  background: linear-gradient(180deg, #a20101 0%, #a20111 10%, #000000 100%); /* Gradient flows from top to bottom, dark at footer */
+  background: linear-gradient(180deg, #1E792C 0%, #1E792C 10%, #000000 100%); /* Gradient flows from top to bottom, dark at footer */
   margin:40px;
   display: flex;
   flex-direction: column;
@@ -279,9 +281,9 @@ const IntelligageScreen: React.FC = memo(() => {
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
-  // let summary = useChatSummary(chat);
+  let summary = useChatSummary(chat);
   // const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summmary=${summary}`;
-  const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
+  const QR_CODE_URL=`https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48?summmary=${summary}`;
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
@@ -297,6 +299,9 @@ const IntelligageScreen: React.FC = memo(() => {
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
 
+
+  console.log("summary",summary)
+ 
 useEffect(() => {
   /**
    * Logic:
