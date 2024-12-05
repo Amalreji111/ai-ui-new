@@ -394,12 +394,14 @@ useEffect(() => {
           showHoverButtons={false}
           imageStyle={{
             objectFit: 'cover',
-            width: "100%",
-            height: "100%"
+            width: "100px",
+            height: "800px"
            }}
            style={{
             backgroundColor:"transparent",
-            borderWidth:0
+            borderWidth:0,
+            width: "1000px",
+            height: "800px"
 
            }}
            
