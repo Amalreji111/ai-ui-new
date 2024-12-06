@@ -13,7 +13,7 @@ import { FormCheckboxDisplay } from "../../form/FormCheckboxDisplay";
 import { Returns } from "../../../state/data-object/Returns";
 import { AppTable } from "../../common/app-table/AppTable";
 
-export const ChatDebugDisplay = ({ chat }: { chat: Chat }) => {
+export const ChatDebugDisplay = ({ chat,isPerfChecked }: { chat: Chat,isPerfChecked?:boolean }) => {
   const { modes } = useAppModesAndParams();
   const [chatDebugPrompt, setChatDebugPrompt] = useState<string | undefined>(
     ""
@@ -22,11 +22,19 @@ export const ChatDebugDisplay = ({ chat }: { chat: Chat }) => {
     displays: new Set<"perf" | "audio" | "prompt" | "metrics">(),
   });
 
+  useEffect(() => {
+    if(isPerfChecked){
+      state.displays.add("perf");
+      setState({ displays: new Set(state.displays) });
+    }
+  },[])
+
   AppEvents.useEventListener("chat:debug", (evt) => {
     console.log(evt);
     const { prompt } = evt.detail;
     setChatDebugPrompt(prompt);
   });
+
   if (!modes.includes("debug")) {
     return <></>;
   }
@@ -48,6 +56,7 @@ export const ChatDebugDisplay = ({ chat }: { chat: Chat }) => {
           <FormCheckboxDisplay
             direction={"row"}
             defaultChecked={state.displays.has("perf")}
+            checked={state.displays.has("perf")}
             onChange={(value) => {
               if (value) {
                 state.displays.add("perf");

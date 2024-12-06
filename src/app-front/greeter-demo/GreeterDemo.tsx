@@ -232,6 +232,16 @@ const StyledText = styled.span`
 const StatusIconContainer = styled.div`
 display: flex;
 `
+const DebugDisplayContainer = styled.div`
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  height:80%;
+  color:white;
+  z-index: 1000;
+  //white transparent background
+  background: rgba(255, 255, 255, 0.5);
+`;
 
 const TypingOverlay = memo(
   ({ text, typingSpeed = 40 }: { text: string; typingSpeed?: number }) => {
@@ -431,6 +441,9 @@ useEffect(() => {
   return (
     <Frame>
       <Container>
+      {chat&&<DebugDisplayContainer>
+            <ChatDebugDisplay chat={chat} isPerfChecked={true}/>
+          </DebugDisplayContainer> }
         <WaveAnimation>
           <img
           
