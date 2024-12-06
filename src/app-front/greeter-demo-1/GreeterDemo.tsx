@@ -75,7 +75,6 @@ const ImageContainer = styled.div`
   display:flex;
   align-items:center;
   justify-content:center;
-  background:transparent;
   margin-bottom: 2%; /* Spacing between image and footer */
   
   @media (max-width: 768px) {
@@ -290,6 +289,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
+  const characterBackground = getQueryParam("characterBackground", "transparent");
+
   let summary = useChatSummary(chat);
   const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summary=${summary}`;
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
@@ -408,10 +409,10 @@ useEffect(() => {
             height: "800px"
            }}
            style={{
-            backgroundColor:"transparent",
             borderWidth:0,
             width: "1000px",
-            height: "800px"
+            height: "800px",
+            background:characterBackground??"transparent",
 
            }}
            
@@ -466,7 +467,7 @@ useEffect(() => {
           <CameraIcon isActive={isCameraActive} />
           </StatusIconContainer>
 
-          <ImageContainer >
+          <ImageContainer style={{background:characterBackground??"transparent"}}>
             {avatar}
             {/* <Overlay></Overlay> */}
           </ImageContainer>
