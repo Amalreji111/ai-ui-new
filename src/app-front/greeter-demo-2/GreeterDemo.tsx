@@ -58,7 +58,7 @@ const Content = styled.div`
   align-items: center;
   justify-content: center; /* Moves content closer to the footer */
   flex: 1;
-  background: linear-gradient(180deg, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,1) 100%);
+  background:black;
 `;
 
 const CircularDisplayContainer = styled.div`
