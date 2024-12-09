@@ -7,6 +7,7 @@ import ChatInterface from "./greeter-demo/GreeterDemo";
 import { GreeterDemoFront } from "./greeter-demo/GreeterDemoFront";
 import { AiUiScreen } from "./ai-ui-chat/GreeterDemoFront";
 import { BettyDemoFront } from "./greeter-demo-1/GreeterDemoFront";
+import { CircularGreeterDemoFront } from "./greeter-demo-2/GreeterDemoFront";
 
 export const APP_FRONTS: Record<string, ReactChild> = {
   "power-user": <PowerUserSpa />,
@@ -15,5 +16,6 @@ export const APP_FRONTS: Record<string, ReactChild> = {
   "pizza-demo": <PizzaDemoFront />,
   "xmas-demo":<GreeterDemoFront />,
   "betty-demo":<BettyDemoFront />,
-  "ai-ui-chat":<AiUiScreen/>
+  "ai-ui-chat":<AiUiScreen/>,
+  "circular-greeter":<CircularGreeterDemoFront/>
 } as const;

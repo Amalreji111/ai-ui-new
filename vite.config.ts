@@ -66,7 +66,7 @@ export default defineConfig({
  // __PAP_ID__:JSON.stringify("access-point-1729798916406-965d156a-2242-44af-9a4a-7e38de595a1f"),
  // __APP_FRONT__: JSON.stringify("ai-ui-chat"),
  //FOR XMAS DEMO
- __APP_FRONT__: JSON.stringify("xmas-demo"),
+ __APP_FRONT__: JSON.stringify("circular-greeter"),
 
  //BETTY DEMO
 //  __APP_FRONT__: JSON.stringify("betty-demo"),
