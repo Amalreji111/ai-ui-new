@@ -63,8 +63,8 @@ const Content = styled.div`
 
 const CircularDisplayContainer = styled.div`
   position: relative; /* Changed from absolute */
-  width: 100%;
-  height: 50%;
+  width: 600px;
+  height: 600px;
   bottom:0;
   display:flex;
   border-radius:50%;
@@ -96,7 +96,7 @@ gap:20px;
 
 const QRText = styled.p`
   color: white;
-  font-size: 30px;
+  font-size: 24px;
   line-height: 1.4;
   margin: 0;
   white-space: nowrap;
@@ -115,7 +115,7 @@ const TypeOverlayContainer = styled.div`
   max-height: 50px;
   max-width: 500px;
   width: 100%;
-  font-size: 38px;
+  font-size: 30px;
   letter-spacing: 0.2px;
   margin-top: 16px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -167,8 +167,8 @@ display: flex;
 const FooterContainer = styled.div` 
 position:absolute;
 bottom:0;
-width:90%;
-height:40%;
+width:97%;
+height:300px;
 background:#4D38D3;
 display:flex;
 border-radius:250px;
@@ -331,8 +331,8 @@ const { audioContext } = getTtsState();
           showHoverButtons={false}
           imageStyle={{
             objectFit: 'cover',
-            width: "100%",
-            height: "100%"
+            width: "300px",
+            height: "300px"
            }}
            style={{
             backgroundColor:"transparent",
@@ -398,7 +398,7 @@ const { audioContext } = getTtsState();
           </StatusIconContainer>
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
           <QRContainer>
-            <QrCodeGenerator url={QR_CODE_URL}/>
+            <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/>
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             <QRText>
             Scan to 

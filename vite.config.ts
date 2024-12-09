@@ -67,6 +67,8 @@ export default defineConfig({
  // __APP_FRONT__: JSON.stringify("ai-ui-chat"),
  //FOR XMAS DEMO
  __APP_FRONT__: JSON.stringify("circular-greeter"),
+ __SHORT_IO_KEY__:JSON.stringify('sk_bdz6yf24gGiDJo8H'),
+ __SHORT_IO_DOMAIN__:JSON.stringify('intelligage.short.gy'),
 
  //BETTY DEMO
 //  __APP_FRONT__: JSON.stringify("betty-demo"),

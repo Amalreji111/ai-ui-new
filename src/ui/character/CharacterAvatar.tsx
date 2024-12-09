@@ -233,8 +233,8 @@ export const CharacterAvatar = memo(
                     character.card.data.extensions?.avatar3dUrl ? (
                       <Flex
                         style={{
-                          maxHeight: "40vh",
-                          maxWidth: "40vw",
+                          maxHeight: "400px",
+                          maxWidth: "400px",
                           overflow: "auto",
                           ...style,
                         }}
@@ -244,7 +244,7 @@ export const CharacterAvatar = memo(
                           analyserNode={analyserNode}
                           canvasWidth={avatar3dCanvasWidth}
                           canvasHeight={avatar3dCanvasHeight}
-                          canvasStyle={{ maxWidth: "40vw", maxHeight: "40vh" }}
+                          canvasStyle={{ maxWidth: "400px", maxHeight: "400px" }}
                           gltfCameraOptions={avatar3dCameraOptions}
                           animationPath={
                             character.card.data.extensions.avatar3dAnimationUrl
