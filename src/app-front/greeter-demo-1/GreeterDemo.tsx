@@ -428,14 +428,23 @@ useEffect(() => {
   
       
   
-  if (!ttsEnabled) {
-    Ttss.enableTts();
-  }
+    
+
   
 
+  useEffect(() => {
+    AsrCustoms.startCustomAsr();
+    if (!ttsEnabled) {
+      Ttss.enableTts();
+    }
+   return () => {
+    AsrCustoms.stopVadAsr();
+    Ttss.disableTts();
+   }
+
+  }, []);
 
 
-  AsrCustoms.startCustomAsr();
 
   return (
     <Frame>
