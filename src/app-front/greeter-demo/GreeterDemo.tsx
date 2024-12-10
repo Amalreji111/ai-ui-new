@@ -430,15 +430,18 @@ useEffect(() => {
   
       
   
-  if (!ttsEnabled) {
-    Ttss.enableTts();
-  }
-  
-
-
-
-  AsrCustoms.startCustomAsr();
-
+      useEffect(() => {
+        AsrCustoms.startCustomAsr();
+        if (!ttsEnabled) {
+          Ttss.enableTts();
+        }
+       return () => {
+        AsrCustoms.stopVadAsr();
+        Ttss.disableTts();
+       }
+    
+      }, []);
+    
   return (
     <Frame>
       <Container>
