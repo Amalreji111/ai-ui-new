@@ -434,17 +434,16 @@ useEffect(() => {
 
   useEffect(() => {
     AsrCustoms.startCustomAsr();
-    if (!ttsEnabled) {
-      Ttss.enableTts();
-    }
+  
    return () => {
     AsrCustoms.stopVadAsr();
-    Ttss.disableTts();
    }
 
   }, []);
 
-
+  if (!ttsEnabled) {
+    Ttss.enableTts();
+  }
 
   return (
     <Frame>
@@ -497,6 +496,8 @@ useEffect(() => {
           height: '200px',
           opacity: 0,
           pointerEvents: 'none',
+          willChange: 'opacity', // GPU optimization hint
+
         }}
       />
         <Footer>
