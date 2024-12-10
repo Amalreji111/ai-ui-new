@@ -354,16 +354,15 @@ const { audioContext } = getTtsState();
   
       useEffect(() => {
         AsrCustoms.startCustomAsr();
-        if (!ttsEnabled) {
-          Ttss.enableTts();
-        }
+      
        return () => {
         AsrCustoms.stopVadAsr();
-        Ttss.disableTts();
        }
     
       }, []);
-    
+      if (!ttsEnabled) {
+          Ttss.enableTts();
+        }
 
   return (
     <Frame>
@@ -431,6 +430,8 @@ const { audioContext } = getTtsState();
           height: '200px',
           opacity: 0,
           pointerEvents: 'none',
+          willChange: 'opacity', // GPU optimization hint
+
         }}
       />
       </Container>
