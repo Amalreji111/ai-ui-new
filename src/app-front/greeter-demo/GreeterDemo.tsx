@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import styled,{ keyframes } from 'styled-components';
 
 // Import your assets here
@@ -305,8 +305,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const GREETING_TIMEOUT = noFaceDetectionTimer*1000; // 10 seconds
   const characters = DataObjectStates.useDataObjectsById<"app-character">(
     [chat?.aiCharacterId, chat?.userCharacterId].filter(isDefined)
-
-  )
+    )
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
 
@@ -387,6 +386,19 @@ useEffect(() => {
     }
   }, [detected]);
 
+  useEffect(() => {
+    AsrCustoms.startCustomAsr();
+ 
+   return () => {
+    AsrCustoms.stopVadAsr();
+   }
+
+  }, []);
+  if (!ttsEnabled) {
+    Ttss.enableTts();
+  }
+  
+
 //enable face detection if detect no voice activity for atleast 5 seconds. define seconds in a variable
 
   
@@ -430,18 +442,6 @@ useEffect(() => {
   
       
   
-      useEffect(() => {
-        AsrCustoms.startCustomAsr();
-        if (!ttsEnabled) {
-          Ttss.enableTts();
-        }
-       return () => {
-        AsrCustoms.stopVadAsr();
-        Ttss.disableTts();
-       }
-    
-      }, []);
-    
   return (
     <Frame>
       <Container>
@@ -496,6 +496,8 @@ useEffect(() => {
           height: '200px',
           opacity: 0,
           pointerEvents: 'none',
+          willChange: 'opacity', // GPU optimization hint
+
         }}
       />
         <Footer>
