@@ -294,7 +294,7 @@ const IntelligageScreen: React.FC = memo(() => {
   console.log(characterBackground,"characterBackground")
   let summary = useChatSummary(chat);
   // const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summmary=${summary}`;
-  const QR_CODE_URL=`https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48?summmary=${summary}`;
+  const QR_CODE_URL=` https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
