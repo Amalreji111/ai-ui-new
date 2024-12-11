@@ -443,7 +443,7 @@ const { audioContext } = getTtsState();
           </StatusIconContainer>}
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
           <QRContainer>
-            <img src={BankLogo} height={100} width={100} style={{zIndex:1}}/>
+            <img src={BankLogo} height={150} width={150} style={{zIndex:1}}/>
             {/* <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/> */}
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             {/* <QRText>
