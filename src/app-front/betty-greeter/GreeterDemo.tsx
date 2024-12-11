@@ -292,7 +292,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const characterBackground = getQueryParam("characterBackground", "transparent");
 
   let summary = useChatSummary(chat);
-  const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summary=${summary}`;
+  const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8?user.summary=${summary}`;
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
   // console.log(summary,"Summary")
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({

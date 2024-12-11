@@ -56,7 +56,7 @@ export default defineConfig({
  // ),
 
 //currently used betty pap
- __PAP_ID__:JSON.stringify("access-point-1731369542080-9e8d483a-2613-482c-b726-2b7f2ec3b1be"),
+ __PAP_ID__:JSON.stringify("access-point-1733936896047-934efc17-f226-4fb0-ace8-4963212ef97b"),
 
  //XMAS -pap
 //  __PAP_ID__:JSON.stringify("access-point-1732810105505-839046aa-cfba-4236-a863-7895cbf41ebf"),

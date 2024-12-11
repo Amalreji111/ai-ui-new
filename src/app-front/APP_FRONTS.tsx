@@ -6,7 +6,7 @@ import { PizzaDemoFront } from "./pizza-demo/PizzaDemoFront";
 import ChatInterface from "./greeter-demo/GreeterDemo";
 import { GreeterDemoFront } from "./greeter-demo/GreeterDemoFront";
 import { AiUiScreen } from "./ai-ui-chat/GreeterDemoFront";
-import { BettyDemoFront } from "./greeter-demo-1/GreeterDemoFront";
+import { BettyDemoFront } from "./betty-greeter/GreeterDemoFront";
 
 export const APP_FRONTS: Record<string, ReactChild> = {
   "power-user": <PowerUserSpa />,
