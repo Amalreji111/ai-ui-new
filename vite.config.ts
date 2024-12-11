@@ -32,7 +32,8 @@ export default defineConfig({
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
     __APP_VERSION__: JSON.stringify(version),
-
+    __SHORT_IO_KEY__:JSON.stringify('pk_XsINOQLrfbbKjiJt'),
+    __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.net'),
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
     // __PAP_ID__: JSON.stringify(
