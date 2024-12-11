@@ -1,6 +1,7 @@
 /* IconComponent.css */
 .icon {
     font-size: 40px;
+    z-index: 1 !important;
     /* transition: color 0.3s ease; */
   }
   
@@ -9,6 +10,6 @@
   }
   
   .icon.inactive {
-    color: red;
+    color: rgb(255, 238, 0);
   }
   

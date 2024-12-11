@@ -5,6 +5,9 @@ import styled,{ keyframes } from 'styled-components';
 import qrCodeImage from './assets/qrcode.png';
 import intelliageImage from './assets/intelligage.png';
 import intelliageLogo from './assets/intelligage-logo.png';
+import BankLogo from './assets/bank_logo.webp';
+import XmasBackground from './assets/BG_red_xmas.webp'
+import SnowFallAnimation from './assets/snow-fall.json'
 import { useIsTtsSpeaking } from '../../tts/useIsTtsSpeaking';
 import { getTtsState } from '../../tts/TtsState';
 import { useCurrentChat } from '../../ui/chat/useCurrentChat';
@@ -75,7 +78,7 @@ const CircularDisplayContainer = styled.div`
 `;
 const CharacterContainer =styled.div`
 position : absolute;
-top:0;
+bottom:170;
 `
 
 
@@ -85,20 +88,20 @@ top:0;
 
 const QRContainer = styled.div`
   display: flex;
-  align-items: center;
+  align-self: center;
   flex-direction:row;
 margin-top:50px;
-margin-left:20px;
-gap:20px;
+
 
 `;
 
 
 const QRText = styled.p`
   color: white;
-  font-size: 24px;
+  font-size: 18px;
   line-height: 1.4;
   margin: 0;
+  z-index: 1;
   white-space: nowrap;
 `;
 
@@ -108,17 +111,18 @@ const blink = keyframes`
   100% { opacity: 1; }
 `;
 
-const TypeOverlayContainer = styled.div`
-  background: transparent;
+const   TypeOverlayContainer = styled.div`
   color: white;
-  min-height: 50px;
-  max-height: 50px;
-  max-width: 500px;
+  min-height: 35px;
+  max-height: 35px;
+  max-width: 400px;
+  min-width: 400px;
+
+    background-color:transparent;
   width: 100%;
-  font-size: 30px;
+  font-size: 22px;
   letter-spacing: 0.2px;
   margin-top: 16px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   position: absolute;
   top: 0;
   left: 50%;
@@ -155,13 +159,14 @@ const TextContainer = styled.div`
 `;
 
 const StyledText = styled.span`
-  background: rgba(0, 0, 0, 0.9);
+  background: transparent;
   text-align: center;
   padding: 0 10px;
 `;
 
 const StatusIconContainer = styled.div`
 display: flex;
+z-index: 1 !important;
 `
 
 const FooterContainer = styled.div` 
@@ -169,14 +174,37 @@ position:absolute;
 bottom:0;
 width:97%;
 height:300px;
-background:#4D38D3;
 display:flex;
 border-radius:250px;
+padding-bottom:100px;
+padding:auto;
 flex-direction:row;
 align-items:center;
 justify-content:center;
 
 `
+const HeaderBackgroundImage = styled.img`
+position: absolute;
+width: 100%;
+height: 100%;
+top:0;
+left:0;
+background-size: cover;
+background-position: center;
+z-index: 0;
+background-repeat:repeat;`
+
+const FooterBackgroundImage = styled.img`
+position: absolute;
+width: 100%;
+height: 100%;
+top:0;
+left:0;
+background-image: url('/assets/footer.png');
+background-size: cover;
+background-position: center;
+z-index: 0;
+background-repeat: no-repeat;`
 
 const TypingOverlay = memo(
   ({ text, typingSpeed = 40 }: { text: string; typingSpeed?: number }) => {
@@ -226,6 +254,10 @@ const IntelligageScreen: React.FC = memo(() => {
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
+  const needIndicators = getQueryParam("needIndicators", "false");
+  const characterBackground = getQueryParam("characterBackground", "transparent");
+  const outerBackground = getQueryParam("outerBackground", "black");
+
   // let summary = useChatSummary(chat);
   const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12`;
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
@@ -331,12 +363,12 @@ const { audioContext } = getTtsState();
           showHoverButtons={false}
           imageStyle={{
             objectFit: 'cover',
-            width: "300px",
-            height: "300px"
+            width: "400px",
+            height: "400px",
            }}
            style={{
-            backgroundColor:"transparent",
-            borderWidth:0
+            backgroundColor:characterBackground??"transparent",
+            borderWidth:0,
 
            }}
            
@@ -369,47 +401,58 @@ const { audioContext } = getTtsState();
       <Container>
         {/* <WaveAnimation> */}
           
-       {/* <Lottie 
-          speed={0.5}
-          isStopped={!animate}
-	    options={{
-        loop: true,
-        autoplay: true,
-        animationData: animationData,
-        rendererSettings: {
-          preserveAspectRatio: "xMidYMid slice"
-        }
-      }}
-        height={400}
-        // width={400}
-      /> 
-        </WaveAnimation> */}
-        <Content style={{ position: "relative" }}>
+       
+        <Content style={{ position: "relative" ,background:outerBackground??'black'}}>
           
 
-          <CircularDisplayContainer >
-            <CharacterContainer>
+          <CircularDisplayContainer style={{ backgroundColor:characterBackground??"transparent" }}>
+            <CharacterContainer style={{ backgroundColor:characterBackground??"transparent" }}>
             
             {avatar}
+            {
+              animate&&     <Lottie 
+              speed={0.5}
+              isStopped={!animate}
+          options={{
+            loop: true,
+            autoplay: true,
+            animationData: SnowFallAnimation,
+            rendererSettings: {
+              preserveAspectRatio: "xMidYMid slice"
+            }
+          }}
+          style={{
+            position: "absolute",
+            top: 0,
+            width: "100%",
+            height: "100%"
+          }}
+            height={400}
+            // width={400}
+          /> 
+            }
+       
             </CharacterContainer>
             {/* <Overlay></Overlay> */}
             <FooterContainer>
-            <StatusIconContainer>
+              <FooterBackgroundImage src={XmasBackground} />
+           {convertToBoolean(needIndicators)&& <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />
           <CameraIcon isActive={isCameraActive} />
-          </StatusIconContainer>
+          </StatusIconContainer>}
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
           <QRContainer>
-            <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/>
+            <img src={BankLogo} height={100} width={100} style={{zIndex:1}}/>
+            {/* <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/> */}
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
-            <QRText>
+            {/* <QRText>
             Scan to 
             <br/>
             continue on
               <br />
               your phone
-              </QRText>
+              </QRText> */}
           </QRContainer>
             </FooterContainer>
           </CircularDisplayContainer>

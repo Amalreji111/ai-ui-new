@@ -7,7 +7,7 @@ const FaceIcon = memo(({ isActive }: { isActive: boolean }) => {
     <i className="bi bi-person-bounding-box"
     style={{
       fontSize: "40px",
-      color: isActive ? '#00ff00 ' : 'red'
+      color: isActive ? '#00ff00 ' : 'rgb(255, 238, 0)'
     }}
     ></i>
   );

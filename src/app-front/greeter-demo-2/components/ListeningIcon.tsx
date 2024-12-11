@@ -10,7 +10,7 @@ const ListeningIcon = memo(({ isActive }: { isActive: boolean }) => {
     // ></i>
     <i className={`bi bi-mic-fill  `} style={{
       fontSize: "40px",
-      color: isActive ? '#00ff00 ' : 'red'
+      color: isActive ? '#00ff00 ' : 'rgb(255, 238, 0)'
     }}></i>
   );
 });
