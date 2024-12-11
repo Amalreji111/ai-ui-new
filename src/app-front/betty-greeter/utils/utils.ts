@@ -34,3 +34,34 @@ export const getQueryParamAsNumber = (paramName: string, defaultValue: number): 
     // Return the answer for the found field
     return field.answer;
   }
+  export async function getShortUrl(url: string) {
+    try{
+      const url = 'https://api.short.io/links';
+const options = {
+  method: 'POST',
+  headers: {
+    accept: 'application/json',
+    'content-type': 'application/json',
+    Authorization: __SHORT_IO_KEY__
+  },
+  body: JSON.stringify({
+    skipQS: false,
+    archived: false,
+    allowDuplicates: false,
+    originalURL: 'google.com',
+    domain: __SHORT_IO_DOMAIN__
+  })
+};
+
+return await fetch(url, options)
+  .then(res => res.json())
+  .then(json => {
+    return json.shortURL
+  })
+  .catch(err =>{
+    throw new Error(err);
+  });
+    }catch(error){
+      return `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summary=${null}`
+    }
+  }
