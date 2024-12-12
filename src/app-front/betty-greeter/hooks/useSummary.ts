@@ -30,9 +30,8 @@ export function useChatSummary(chat: Chat | undefined) {
       reportByName[report.name] = report;
     }
     const finalReports = Object.values(reportByName);
-    console.log("Final",finalReports)
     // Get summary from user report
-    const summary = getValuesFromVariable(finalReports, 'userInfo', 'convoSummary');
+    const summary = getValuesFromVariable(finalReports, 'userInfo', 'summary');
 
     // Return summary or empty string if not found
     return summary || '';

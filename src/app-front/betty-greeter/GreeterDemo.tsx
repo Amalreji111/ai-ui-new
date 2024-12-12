@@ -23,7 +23,7 @@ import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 import {  useFaceDetectionNew } from './hooks/useFacedetection-new';
 // import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
-import { convertToBoolean, getQueryParam, getQueryParamAsNumber } from './utils/utils';
+import { convertToBoolean, getQueryParam, getQueryParamAsNumber, getShortUrl } from './utils/utils';
 import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
@@ -290,9 +290,9 @@ const IntelligageScreen: React.FC = memo(() => {
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const characterBackground = getQueryParam("characterBackground", "transparent");
+  const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8')
 
   let summary = useChatSummary(chat);
-  const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8?user.summary=${summary}`;
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
   // console.log(summary,"Summary")
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
@@ -309,7 +309,32 @@ const IntelligageScreen: React.FC = memo(() => {
   )
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
+ useEffect(() => {
+   generateShortUrl(summary)
+ },[])
+ 
+  
+ const previousSummaryRef = useRef(summary); // Store the previous summary
+const previousCameraState =useRef(isCameraActive)
+ useEffect(() => {
+    console.log("Generating short URL for summary:", summary);
+     if (previousSummaryRef.current !== summary) {
+       // Summary has changed
+       generateShortUrl(summary);
+       previousSummaryRef.current = summary; // Update the previous summary
+     }
 
+   return () =>{
+    
+   }; // Cleanup on unmount
+ }, [summary]); // React to changes in summary
+
+ const generateShortUrl = async (summary: string) => {
+  const largeUrl = `https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8?user.summary=${summary}`;
+  const shortUrl =await getShortUrl(largeUrl);
+  setQrCodeUrl(shortUrl)
+
+ };
 useEffect(() => {
   /**
    * Logic:
@@ -344,6 +369,23 @@ useEffect(() => {
     }
   };
 }, [ttsSpeaking, speaking, enableDetection]);
+
+useEffect(() => {
+  console.log("isCameraActive", isCameraActive);
+
+  if (previousCameraState.current !== isCameraActive) {
+    if (isCameraActive) {
+      console.log("stopping asr");
+      AsrCustoms.stopVadAsr();
+    } else {
+      console.log("starting asr");
+      AsrCustoms.startCustomAsr();
+    }
+    // Update the previous state after processing
+    previousCameraState.current = isCameraActive;
+  }
+}, [isCameraActive]);
+
 //  useEffect(() => {
 //   const enableFaceDetection = getQueryParam("enableFacedetection", "true");
 //   if (convertToBoolean(enableFaceDetection)) {
@@ -506,7 +548,7 @@ useEffect(() => {
           </LogoContainer>
 
           <QRContainer>
-            <QrCodeGenerator url={QR_CODE_URL}/>
+            <QrCodeGenerator  url={qrCodeUrl}/>
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             <QRText>
               Scan to continue on
