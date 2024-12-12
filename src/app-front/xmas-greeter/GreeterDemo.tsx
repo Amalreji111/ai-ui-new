@@ -23,7 +23,7 @@ import { isDefined } from '@mjtdev/engine/packages/mjtdev-object';
 import {  useFaceDetectionNew } from './hooks/useFacedetection-new';
 // import { useFaceDetection as useFaceDetectionNew } from './hooks/facedetection-new1';
 import { ChatStates } from '../../state/chat/ChatStates';
-import { convertToBoolean, getQueryParam, getQueryParamAsNumber, getValuesFromVariable } from './utils/utils';
+import { convertToBoolean, getQueryParam, getQueryParamAsNumber, getShortUrl, getValuesFromVariable } from './utils/utils';
 import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
@@ -283,6 +283,7 @@ const TypingOverlay = memo(
   }
 );
 
+
 const IntelligageScreen: React.FC = memo(() => {
   const { chat } = useCurrentChat();
   const { ttsEnabled } = useAppState();
@@ -291,10 +292,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const characterBackground = getQueryParam("characterBackground", "transparent");
-  console.log(characterBackground,"characterBackground")
+  const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12')
   let summary = useChatSummary(chat);
-  // const QR_CODE_URL = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summmary=${summary}`;
-  const QR_CODE_URL=` https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
@@ -308,10 +307,44 @@ const IntelligageScreen: React.FC = memo(() => {
     )
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
-
-
-  console.log("summary",summary)
  
+ const generateShortUrl = async (summary: string) => {
+  const largeUrl = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
+  const shortUrl =await getShortUrl(largeUrl);
+  setQrCodeUrl(shortUrl)
+
+ };
+ const previousSummaryRef = useRef(summary); // Store the previous summary
+const previousCameraState =useRef(isCameraActive)
+ useEffect(() => {
+     if (previousSummaryRef.current !== summary) {
+       // Summary has changed
+       generateShortUrl(summary);
+       previousSummaryRef.current = summary; // Update the previous summary
+     }
+
+   return () =>{
+    
+   }; // Cleanup on unmount
+ }, [summary]); // React to changes in summary
+ useEffect(() => {
+
+  if (previousCameraState.current !== isCameraActive) {
+    if (isCameraActive) {
+      console.log("stopping asr");
+      AsrCustoms.stopVadAsr();
+    } else {
+      console.log("starting asr");
+      AsrCustoms.startCustomAsr();
+    }
+    // Update the previous state after processing
+    previousCameraState.current = isCameraActive;
+  }
+}, [isCameraActive]);
+
+ useEffect(()=>{
+  generateShortUrl(summary)
+ },[])
 useEffect(() => {
   /**
    * Logic:
@@ -358,7 +391,6 @@ useEffect(() => {
   // const attentionState = useScreenAttention(faceDetected)
   const { audioContext } = getTtsState();
   const greetUser = () => {
-    console.log("Hello! New face detected!");
     ChatStates.addChatMessage({ chat, text: "Hi" });
 
     // Your greeting logic goes here
@@ -506,7 +538,7 @@ useEffect(() => {
           </LogoContainer>
 
           <QRContainer>
-            <QrCodeGenerator url={QR_CODE_URL}/>
+            <QrCodeGenerator url={qrCodeUrl}/>
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             <QRText>
               Scan to continue on
