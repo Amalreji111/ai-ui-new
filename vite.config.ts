@@ -32,7 +32,8 @@ export default defineConfig({
   define: {
     __BUILD_TIMESTAMP__: JSON.stringify(new Date().toISOString()),
     __APP_VERSION__: JSON.stringify(version),
-
+    __SHORT_IO_KEY__:JSON.stringify('sk_X5G2rj0PnQSi6yYX'),
+    __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.io'),
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
     // __PAP_ID__: JSON.stringify(
@@ -67,9 +68,6 @@ export default defineConfig({
  // __APP_FRONT__: JSON.stringify("ai-ui-chat"),
  //FOR XMAS DEMO
  __APP_FRONT__: JSON.stringify("circular-greeter"),
- __SHORT_IO_KEY__:JSON.stringify('pk_XsINOQLrfbbKjiJt'),
- __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.net'),
-
  //BETTY DEMO
 //  __APP_FRONT__: JSON.stringify("betty-demo"),
     // AI-UI Production settings

@@ -35,7 +35,7 @@ export const getQueryParamAsNumber = (paramName: string, defaultValue: number): 
     return field.answer;
   }
 
-  export async function getShortUrl(url: string) {
+  export async function getShortUrl(originalUrl: string) {
     try{
       const url = 'https://api.short.io/links';
 const options = {
@@ -49,7 +49,7 @@ const options = {
     skipQS: false,
     archived: false,
     allowDuplicates: false,
-    originalURL: 'google.com',
+    originalURL: originalUrl,
     domain: __SHORT_IO_DOMAIN__
   })
 };
@@ -63,6 +63,6 @@ return await fetch(url, options)
     throw new Error(err);
   });
     }catch(error){
-      return `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?summary=${null}`
+      return `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${null}`
     }
   }

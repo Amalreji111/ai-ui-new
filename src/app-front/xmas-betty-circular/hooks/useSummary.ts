@@ -4,16 +4,16 @@ import { DataObjectStates } from '../../../state/data-object/DataObjectStates';
 import { factsToReports } from '../../../ui/chat/mind/report/factsToReports';
 import { getValuesFromVariable } from '../utils/utils';
 
-export function useChatSummary(chat:Chat|undefined) {
+export function useChatSummary(chat: Chat | undefined) {
+  // Use the Hook at the top level
+  const chatStateEntries = DataObjectStates.useChildDataObjects(
+    chat?.id || '', 
+    "chat-state-entry"
+  ).filter((cse) => cse.namespace !== "aipl");
+
   const summary = useMemo(() => {
     // If no chat, return empty string
     if (!chat?.id) return '';
-
-    // Get chat state entries, filtering out 'aipl' namespace
-    const chatStateEntries = DataObjectStates.useChildDataObjects(
-      chat.id, 
-      "chat-state-entry"
-    ).filter((cse) => cse.namespace !== "aipl");
 
     // Convert chat state entries to facts
     const facts = Chats.chatStateEntriesToFacts(chatStateEntries);
@@ -30,13 +30,12 @@ export function useChatSummary(chat:Chat|undefined) {
       reportByName[report.name] = report;
     }
     const finalReports = Object.values(reportByName);
-
     // Get summary from user report
     const summary = getValuesFromVariable(finalReports, 'userInfo', 'summary');
 
     // Return summary or empty string if not found
     return summary || '';
-  }, [chat?.id]);
+  }, [chat?.id, chatStateEntries]);
 
   return summary;
 }
