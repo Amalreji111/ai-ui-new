@@ -36,7 +36,6 @@ export const getQueryParamAsNumber = (paramName: string, defaultValue: number): 
   }
   export async function getShortUrl(originalUrl: string) {
     try{
-      console.log(__SHORT_IO_KEY__)
       const url = 'https://api.short.io/links';
 const options = {
   method: 'POST',
