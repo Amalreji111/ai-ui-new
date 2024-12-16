@@ -14,6 +14,8 @@ import { AppModes } from "../location/AppModes";
 import { switchWindow } from "../../ui/switchWindow";
 import { pcmToWav } from "../../audio/pcmToWav";
 import { FormControls } from "../../form-control/FormControls";
+import { downsampleAudio, simliClient } from "../../app-front/betty-greeter/components/SimliCharacter";
+import { getTtsState, updateTtsState } from "../../tts/TtsState";
 
 export const APP_MESSAGE_LISTENERS: {
   [k in keyof AppMessageMap]: AppMessageListener<k>[];
@@ -184,9 +186,12 @@ export const APP_MESSAGE_LISTENERS: {
       const wav = mediaType.startsWith("audio/L16")
         ? pcmToWav(rawData, 24000)
         : rawData;
-
+        
+        simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
-      audioPlayer.enqueueAudioClip(wav);
+
+      //TODO: use audioPlayer instead of simli
+      // audioPlayer.enqueueAudioClip(wav);
     },
   ],
   "appInterface:update": [

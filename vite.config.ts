@@ -34,6 +34,8 @@ export default defineConfig({
     __APP_VERSION__: JSON.stringify(version),
     __SHORT_IO_KEY__:JSON.stringify('sk_X5G2rj0PnQSi6yYX'),
     __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.io'),
+    __SIMLI_API_KEY__:JSON.stringify('16nybpxejyst74vd2c9kd'),
+    __SIMLI_FACE_ID__:JSON.stringify("58d53d27-49da-46ac-9011-4b9387442cee"),
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
     // __PAP_ID__: JSON.stringify(
@@ -57,8 +59,7 @@ export default defineConfig({
  // ),
 
 //currently used betty pap
- __PAP_ID__:JSON.stringify("access-point-1733936896047-934efc17-f226-4fb0-ace8-4963212ef97b"),
-
+ __PAP_ID__:JSON.stringify("access-point-1731369542080-9e8d483a-2613-482c-b726-2b7f2ec3b1be"),
  //XMAS -pap
 //  __PAP_ID__:JSON.stringify("access-point-1732810105505-839046aa-cfba-4236-a863-7895cbf41ebf"),
  // __APP_FRONT__: JSON.stringify("pizza-demo"),

@@ -28,6 +28,7 @@ import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
 import { useChatSummary } from './hooks/useSummary';
+import SimliCharacter from './components/SimliCharacter';
 // width: 100%;
 
 
@@ -442,29 +443,34 @@ useEffect(() => {
       ? characters.find(x=>x.id===chat.userCharacterId)
       : undefined;
       const avatar = character ? (
-        <CharacterAvatar
-          hoverActions={["Chat With {char}"]}
-          showHoverButtons={false}
-          imageStyle={{
-            objectFit: 'cover',
-            width: "100px",
-            height: "800px"
-           }}
-           style={{
-            borderWidth:0,
-            width: "1000px",
-            height: "800px",
-            background:characterBackground??"transparent",
+        // <CharacterAvatar
+        //   hoverActions={["Chat With {char}"]}
+        //   showHoverButtons={false}
+        //   imageStyle={{
+        //     objectFit: 'cover',
+        //     width: "100px",
+        //     height: "800px"
+        //    }}
+        //    style={{
+        //     borderWidth:0,
+        //     width: "1000px",
+        //     height: "800px",
+        //     background:characterBackground??"transparent",
 
-           }}
+        //    }}
            
-          character={aiChar}
-          showName={false}
-          show3dAvatar={convertToBoolean(enable3dCharacter)}
-          showContextMenu={false}
-          enableDocumentDrop={false}
-        analyserNode={ttsAnalyzer}
+        //   character={aiChar}
+        //   showName={false}
+        //   show3dAvatar={convertToBoolean(enable3dCharacter)}
+        //   showContextMenu={false}
+        //   enableDocumentDrop={false}
+        // analyserNode={ttsAnalyzer}
           
+        // />
+        <SimliCharacter
+        simili_api_key={__SIMLI_API_KEY__}
+        simli_faceid={__SIMLI_FACE_ID__}
+        ttsAnalyzer={getTtsState().currentSource}
         />
       ) : undefined;
   

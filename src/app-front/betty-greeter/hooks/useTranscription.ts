@@ -44,7 +44,7 @@ const useTranscription = () => {
     : 0;
 
   let parseResult = null;
-  if (transcript&&ttsSpeaking) {
+  if (transcript) {
     parseResult = AiFunctions.parseAiFunctionText(
       Chats.chatMessageToText(transcript),
       { aiFunctionPrefix: ".?" }
