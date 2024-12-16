@@ -189,7 +189,9 @@ export const APP_MESSAGE_LISTENERS: {
         
         simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
-
+      updateTtsState((s) => {
+        s.isSpeaking = true
+      })
       //TODO: use audioPlayer instead of simli
       // audioPlayer.enqueueAudioClip(wav);
     },

@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef } from 'react'
 import { SimliClient } from 'simli-client';
+import { updateTtsState } from '../../../tts/TtsState';
 export const simliClient = new SimliClient();
 export interface SimliCharacterProps {
     simli_faceid: string;
@@ -92,7 +93,7 @@ export const downsampleAudio = (
 
   return result;
 };
-const SimliCharacter = (props: SimliCharacterProps) => {
+const SimliCharacter = memo((props: SimliCharacterProps) => {
     const videoRef = useRef(null)
     const audioRef = useRef(null)
     useEffect(() => {
@@ -126,6 +127,19 @@ const SimliCharacter = (props: SimliCharacterProps) => {
             // connectDailyVoiceClient();
             console.log("Sent initial audio data");
           });
+
+          simliClient?.on('speaking', () => {
+            //TODO: This method is slow
+            //   updateTtsState((s) => {
+            //       s.isSpeaking = true
+            //   })
+          })
+
+          simliClient?.on('silent', () => {
+              updateTtsState((s) => {
+                  s.isSpeaking = false
+              })
+          })
     
           simliClient?.on("disconnected", () => {
             console.log("SimliClient disconnected");
@@ -142,6 +156,7 @@ const SimliCharacter = (props: SimliCharacterProps) => {
             handleSilence: true,
             videoRef: videoRef,
             audioRef: audioRef,
+            SimliURL:"s://api.simli.ai"
           };
     
           simliClient.Initialize(SimliConfig as any);
@@ -186,6 +201,6 @@ const SimliCharacter = (props: SimliCharacterProps) => {
     <audio ref={audioRef} autoPlay playsInline></audio>
     </>
   )
-}
+})
 
 export default SimliCharacter

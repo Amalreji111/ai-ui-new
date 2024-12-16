@@ -4,12 +4,14 @@ import { AiFunctions, AppObjects, Chats } from "ai-worker-common";
 import { useCustomAsrState } from "../../../asr-custom/updateCustomAsrState";
 import { useCurrentChat } from "../../../ui/chat/useCurrentChat";
 import { useIsTtsSpeaking } from "../../../tts/useIsTtsSpeaking";
+import { simliClient } from "../components/SimliCharacter";
+import { getTtsState, useTtsState } from "../../../tts/TtsState";
 
 const useTranscription = () => {
   const { chat, messages } = useCurrentChat();
   const { speaking: asrSpeaking } = useCustomAsrState();
   const [transcription, setTranscription] = useState("");
-  const ttsSpeaking = useIsTtsSpeaking();
+  const {isSpeaking}= getTtsState()
 
   // Filter chat messages and build realAndImaginedMessages array
   let realAndImaginedMessages: any[] = [];
@@ -28,7 +30,7 @@ const useTranscription = () => {
           characterId: chat.aiCharacterId,
         });
 
-    realAndImaginedMessages = [...orderedMessages, speakerMessage].filter(Boolean);
+    realAndImaginedMessages = [...orderedMessages, speakerMessage,simliClient.isAvatarSpeaking].filter(Boolean);
   }
 
   // Extract the latest assistant message and its timestamp
@@ -44,7 +46,7 @@ const useTranscription = () => {
     : 0;
 
   let parseResult = null;
-  if (transcript) {
+  if (transcript &&isSpeaking) {
     parseResult = AiFunctions.parseAiFunctionText(
       Chats.chatMessageToText(transcript),
       { aiFunctionPrefix: ".?" }
