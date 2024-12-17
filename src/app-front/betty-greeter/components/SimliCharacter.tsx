@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef } from 'react'
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { SimliClient } from 'simli-client';
 import { updateTtsState } from '../../../tts/TtsState';
 import defaultSimliVideo from "../assets/simli_preview.mp4"
@@ -101,6 +101,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
   const videoRef = useRef(null)
     const audioRef = useRef(null)
     const { chat } = useCurrentChat();
+    const [isSimliLoading, setIsSimliLoading] = useState(false);
   
 
     const eventListenerSimli = useCallback(() => {
@@ -112,6 +113,10 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             // Start sending audio data
             const audioData = new Uint8Array(6000).fill(0);
             simliClient?.sendAudioData(audioData);
+            setTimeout(() => {
+            setIsSimliLoading(false);
+              
+            }, 1000);
 
             // const streamTrack = props.ttsAnalyzer.createMediaStreamDestination().stream;
             // console.log("streamTrack",streamTrack);
@@ -147,6 +152,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
         console.log("API key:", props.simili_api_key);
         console.log("Face ID:", props.simli_faceid);
         if (videoRef.current && audioRef.current) {
+          // setIsSimliLoading(true);
           const SimliConfig = {
             apiKey: props.simili_api_key,
             faceID: props.simli_faceid,
@@ -189,16 +195,17 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
       useEffect(() => {
         if (!props.needDummy) {
           handleStart();
+          setIsSimliLoading(true);
           return () => handleStop();
         } else {
           simliClient.close();
         }
       }, [props.needDummy]);
     
-      if (props.needDummy) {
+      if (props.needDummy ) {
         return (
           <video
-            style={{ zIndex: 100, width: "100%", height: "550px", background: "#3832A0" }}
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0" ,position:"absolute"}}
             src={defaultSimliVideo}
             loop
             muted
@@ -211,8 +218,18 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
     
       return (
         <>
+          {
+            isSimliLoading && <video 
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0" ,opacity:isSimliLoading?1:0,position:"absolute"}}
+            src={defaultSimliVideo}
+            loop
+            muted
+            key={"simli-video-1"}
+            autoPlay
+            playsInline
+          ></video>}
           <video
-            style={{ zIndex: 100, width: "100%", height: "550px", background: "#3832A0" }}
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0",opacity:isSimliLoading?0:1 ,position:"absolute"}}
             ref={videoRef}
             key={"simli-video"}
             autoPlay
