@@ -28,7 +28,7 @@ import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
 import { useChatSummary } from './hooks/useSummary';
-import SimliCharacter from './components/SimliCharacter';
+import SimliCharacter, { simliClient } from './components/SimliCharacter';
 // width: 100%;
 
 
@@ -400,7 +400,7 @@ useEffect(() => {
   const { audioContext } = getTtsState();
   const greetUser = () => {
     console.log("Hello! New face detected!");
-    ChatStates.addChatMessage({ chat, text: "Hi" });
+    // ChatStates.addChatMessage({ chat, text: "Hi" });
 
     // Your greeting logic goes here
   };
@@ -467,11 +467,23 @@ useEffect(() => {
         // analyserNode={ttsAnalyzer}
           
         // />
-        <SimliCharacter
-        simili_api_key={__SIMLI_API_KEY__}
-        simli_faceid={__SIMLI_FACE_ID__}
-        ttsAnalyzer={getTtsState().currentSource}
-        />
+        
+          isCameraActive?
+          <SimliCharacter
+          simili_api_key={__SIMLI_API_KEY__}
+          simli_faceid={__SIMLI_FACE_ID__}
+          ttsAnalyzer={getTtsState().currentSource}
+          needDummy={true}
+          />
+          :
+          <SimliCharacter
+          simili_api_key={__SIMLI_API_KEY__}
+          simli_faceid={__SIMLI_FACE_ID__}
+          ttsAnalyzer={getTtsState().currentSource}
+          needDummy={false}
+          />
+        
+       
       ) : undefined;
   
       

@@ -1,11 +1,15 @@
 import React, { memo, useCallback, useEffect, useRef } from 'react'
 import { SimliClient } from 'simli-client';
 import { updateTtsState } from '../../../tts/TtsState';
+import defaultSimliVideo from "../assets/simli_preview.mp4"
+import { useCurrentChat } from '../../../ui/chat/useCurrentChat';
+import { ChatStates } from '../../../state/chat/ChatStates';
 export const simliClient = new SimliClient();
 export interface SimliCharacterProps {
     simli_faceid: string;
     simili_api_key: string;
     ttsAnalyzer: any;
+    needDummy?: boolean
 
 }
 const applyLowPassFilter = (
@@ -93,24 +97,17 @@ export const downsampleAudio = (
 
   return result;
 };
-const SimliCharacter = memo((props: SimliCharacterProps) => {
-    const videoRef = useRef(null)
+const SimliCharacter =  memo((props: SimliCharacterProps) => {
+  const videoRef = useRef(null)
     const audioRef = useRef(null)
-    useEffect(() => {
-        if(props.ttsAnalyzer&&simliClient.isConnected()){
-            // Example: sending audio data (should be PCM16 format, 16KHz sample rate)
-          //   const bufferLength = props.ttsAnalyzer.frequencyBinCount;
-          //   const dataArray = new Uint8Array(bufferLength);
-          //   console.log("dataArray",dataArray);
-          // props.ttsAnalyzer.getByteTimeDomainData(dataArray);
-          //     simliClient.sendAudioData(dataArray);
-          
-        }
-      },[props.ttsAnalyzer])
+    const { chat } = useCurrentChat();
+  
+
     const eventListenerSimli = useCallback(() => {
         if (simliClient) {
           simliClient?.on("connected", () => {
             console.log("SimliClient connected");
+            ChatStates.addChatMessage({ chat, text: "Hi" });
 
             // Start sending audio data
             const audioData = new Uint8Array(6000).fill(0);
@@ -156,7 +153,7 @@ const SimliCharacter = memo((props: SimliCharacterProps) => {
             handleSilence: true,
             videoRef: videoRef,
             audioRef: audioRef,
-            SimliURL:"s://api.simli.ai"
+            // SimliURL:"s://api.simli.ai"
           };
     
           simliClient.Initialize(SimliConfig as any);
@@ -190,16 +187,40 @@ const SimliCharacter = memo((props: SimliCharacterProps) => {
       }, []);
     
       useEffect(() => {
-        handleStart()
-        return () => {
-          handleStop();
+        if (!props.needDummy) {
+          handleStart();
+          return () => handleStop();
+        } else {
+          simliClient.close();
         }
-      }, []);
-  return (
-    <>
-    <video style={{zIndex:100,width:"550px",height:"550px",backgroundColor:"black"}} ref={videoRef} autoPlay playsInline></video>
-    <audio ref={audioRef} autoPlay playsInline></audio>
-    </>
+      }, [props.needDummy]);
+    
+      if (props.needDummy) {
+        return (
+          <video
+            style={{ zIndex: 100, width: "100%", height: "550px", background: "#3832A0" }}
+            src={defaultSimliVideo}
+            loop
+            muted
+            key={"dummy-video"}
+            autoPlay
+            playsInline
+          ></video>
+        );
+      }
+    
+      return (
+        <>
+          <video
+            style={{ zIndex: 100, width: "100%", height: "550px", background: "#3832A0" }}
+            ref={videoRef}
+            key={"simli-video"}
+            autoPlay
+            playsInline
+          ></video>
+          <audio ref={audioRef} autoPlay playsInline></audio>
+        </>
+      
   )
 })
 

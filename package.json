@@ -116,7 +116,7 @@
     "rete-react-plugin": "^2.0.5",
     "rete-render-utils": "^2.0.2",
     "rete-scopes-plugin": "^2.1.0",
-    "simli-client": "1.2.2",
+    "simli-client": "1.2.3",
     "slate": "^0.102.0",
     "slate-react": "^0.102.0",
     "styled-components": "^6.1.12",

@@ -35,7 +35,7 @@ export default defineConfig({
     __SHORT_IO_KEY__:JSON.stringify('sk_X5G2rj0PnQSi6yYX'),
     __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.io'),
     __SIMLI_API_KEY__:JSON.stringify('16nybpxejyst74vd2c9kd'),
-    __SIMLI_FACE_ID__:JSON.stringify("58d53d27-49da-46ac-9011-4b9387442cee"),
+    __SIMLI_FACE_ID__:JSON.stringify("e4b0ecec-6af1-4cd6-a870-ad490d0a6270"),
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
     // __PAP_ID__: JSON.stringify(
