@@ -28,6 +28,11 @@ If isSimliEnabled false the default 3d character will be shown.
 ### example usage:
 `` isSimliEnabled=true ``
 
+## simliFaceId
+The face id for using the simli service. The default value is e4b0ecec-6af1-4cd6-a870-ad490d0a6270.
+### example usage:
+`` simliFaceId=e4b0ecec-6af1-4cd6-a870-ad490d0a6270 ``
+
 ## outerBackground
 The colour code for the outer background. The default value is 3832A0.
 ### example usage:

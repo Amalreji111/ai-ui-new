@@ -296,7 +296,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
   const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
-  const similiPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
+  const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
+  const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
   const outerBackground = getQueryParam("outerBackground", "3832A0");
 
 let summary = useChatSummary(chat);
@@ -454,18 +455,18 @@ useEffect(() => {
           isCameraActive&& convertToBoolean(isSimliEnabled)?
           <SimliCharacter
           simili_api_key={__SIMLI_API_KEY__}
-          simli_faceid={__SIMLI_FACE_ID__}
+          simli_faceid={simliFaceId}
           ttsAnalyzer={getTtsState().currentSource}
           needDummy={true}
-          similiPath={similiPreviewPath}
+          similiPath={simliPreviewPath}
           />
           :convertToBoolean(isSimliEnabled)?
           <SimliCharacter
           simili_api_key={__SIMLI_API_KEY__}
-          simli_faceid={__SIMLI_FACE_ID__}
+          simli_faceid={simliFaceId}
           ttsAnalyzer={getTtsState().currentSource}
           needDummy={false}
-          similiPath={similiPreviewPath}
+          similiPath={simliPreviewPath}
 
           />
           :
