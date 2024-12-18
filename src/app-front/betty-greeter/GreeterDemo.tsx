@@ -294,6 +294,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8')
   const animationFileName = getQueryParam("animationFileName", "wave-animation");
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
+  const animationWidth = getQueryParamAsNumber('animationWidth',1000)
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
   const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
   const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
@@ -539,7 +540,7 @@ useEffect(() => {
         }
       }}
         height={animationHeight}
-        // width={400}
+        width={animationWidth}
       /> 
         </WaveAnimation>
         <Content style={{ position: "relative"}}>

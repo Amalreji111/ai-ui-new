@@ -10,6 +10,11 @@ Setting the height of the animation. The default value is 400.
 ### example usage:
 `` animationHeight=500``
 
+## animationWidth
+Setting the width of the animation. The default value is 1000.
+### example usage:
+`` animationWidth=1000``
+
 ## qrTransferPapId
 The pap id for showing the qrcode to transfer the chat.
 ### example usage:
@@ -31,7 +36,7 @@ If isSimliEnabled false the default 3d character will be shown.
 ## simliFaceId
 The face id for using the simli service. The default value is e4b0ecec-6af1-4cd6-a870-ad490d0a6270.
 ### example usage:
-`` simliFaceId=e4b0ecec-6af1-4cd6-a870-ad490d0a6270 ``
+`` simliFaceId=e4b0ecec-6af1-4cd6-a870-ad490d0a6270 ```` 
 
 ## outerBackground
 The colour code for the outer background. The default value is 3832A0.
