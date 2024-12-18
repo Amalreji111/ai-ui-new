@@ -34,7 +34,7 @@ import SimliCharacter, { simliClient } from './components/SimliCharacter';
 
 const Container = styled.div`
   height: 100%;
-  background: linear-gradient(180deg, #5046E5 0%, #3832A0 20%, #000000 100%); /* Gradient flows from top to bottom, dark at footer */
+  background: linear-gradient(180deg, #3832A0 0%, #3832A0 70%, #000000 100%); /* Gradient flows from top to bottom, dark at footer */
   margin:40px;
   display: flex;
   flex-direction: column;
@@ -65,7 +65,7 @@ const Content = styled.div`
   flex-direction: column;
   justify-content: flex-end; /* Moves content closer to the footer */
   flex: 1;
-  background: linear-gradient(180deg, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.3) 50%, rgba(0,0,0,1) 100%);
+  background: linear-gradient(180deg, transparent 0%, transparent 50%, rgba(0,0,0,1) 100%);
 `;
 
 const ImageContainer = styled.div`
@@ -295,6 +295,9 @@ const IntelligageScreen: React.FC = memo(() => {
   const animationFileName = getQueryParam("animationFileName", "wave-animation");
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
+  const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
+  const similiPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
+
 let summary = useChatSummary(chat);
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
   // console.log(summary,"Summary")
@@ -447,46 +450,48 @@ useEffect(() => {
       ? characters.find(x=>x.id===chat.userCharacterId)
       : undefined;
       const avatar = character ? (
-        // <CharacterAvatar
-        //   hoverActions={["Chat With {char}"]}
-        //   showHoverButtons={false}
-        //   imageStyle={{
-        //     objectFit: 'cover',
-        //     width: "100px",
-        //     height: "800px"
-        //    }}
-        //    style={{
-        //     borderWidth:0,
-        //     width: "1000px",
-        //     height: "800px",
-        //     background:characterBackground??"transparent",
-
-        //    }}
-           
-        //   character={aiChar}
-        //   showName={false}
-        //   show3dAvatar={convertToBoolean(enable3dCharacter)}
-        //   showContextMenu={false}
-        //   enableDocumentDrop={false}
-        // analyserNode={ttsAnalyzer}
-          
-        // />
-        
-          isCameraActive?
+          isCameraActive&& convertToBoolean(isSimliEnabled)?
           <SimliCharacter
           simili_api_key={__SIMLI_API_KEY__}
           simli_faceid={__SIMLI_FACE_ID__}
           ttsAnalyzer={getTtsState().currentSource}
           needDummy={true}
+          similiPath={similiPreviewPath}
           />
-          :
+          :convertToBoolean(isSimliEnabled)?
           <SimliCharacter
           simili_api_key={__SIMLI_API_KEY__}
           simli_faceid={__SIMLI_FACE_ID__}
           ttsAnalyzer={getTtsState().currentSource}
           needDummy={false}
+          similiPath={similiPreviewPath}
+
           />
-        
+          :
+        <CharacterAvatar
+          hoverActions={["Chat With {char}"]}
+          showHoverButtons={false}
+          imageStyle={{
+            objectFit: 'cover',
+            width: "100px",
+            height: "800px"
+           }}
+           style={{
+            borderWidth:0,
+            width: "1000px",
+            height: "800px",
+            background:characterBackground??"transparent",
+
+           }}
+           
+          character={aiChar}
+          showName={false}
+          show3dAvatar={convertToBoolean(enable3dCharacter)}
+          showContextMenu={false}
+          enableDocumentDrop={false}
+        analyserNode={ttsAnalyzer}
+          
+        />
        
       ) : undefined;
   
@@ -513,7 +518,11 @@ useEffect(() => {
        {chat&&<DebugDisplayContainer>
             <ChatDebugDisplay chat={chat} isPerfChecked={true}/>
           </DebugDisplayContainer> }
-      <Container>
+      <Container
+      style={{
+        // background:""
+      }}
+      >
         <WaveAnimation>
           
        <Lottie 
@@ -531,7 +540,9 @@ useEffect(() => {
         // width={400}
       /> 
         </WaveAnimation>
-        <Content style={{ position: "relative" }}>
+        <Content style={{ position: "relative",
+          // background:
+         }}>
         <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />
@@ -568,7 +579,7 @@ useEffect(() => {
             <img src={intelliageImage} alt="Intelligage" />
           </LogoContainer>
 
-          <QRContainer>
+          <QRContainer style={{zIndex:14}}>
             <QrCodeGenerator  url={qrCodeUrl}/>
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             <QRText>

@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { SimliClient } from 'simli-client';
 import { updateTtsState } from '../../../tts/TtsState';
-import defaultSimliVideo from "../assets/simli_preview.mp4"
 import { useCurrentChat } from '../../../ui/chat/useCurrentChat';
 import { ChatStates } from '../../../state/chat/ChatStates';
 export const simliClient = new SimliClient();
@@ -10,6 +9,8 @@ export interface SimliCharacterProps {
     simili_api_key: string;
     ttsAnalyzer: any;
     needDummy?: boolean
+    similiPath?: string
+
 
 }
 const applyLowPassFilter = (
@@ -205,8 +206,8 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
       if (props.needDummy ) {
         return (
           <video
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0" ,position:"absolute"}}
-            src={defaultSimliVideo}
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent" ,position:"absolute"}}
+            src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
             loop
             muted
             key={"dummy-video"}
@@ -220,8 +221,8 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
         <>
           {
             isSimliLoading && <video 
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0" ,opacity:isSimliLoading?1:0,position:"absolute"}}
-            src={defaultSimliVideo}
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent" ,opacity:isSimliLoading?1:0,position:"absolute"}}
+            src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
             loop
             muted
             key={"simli-video-1"}
@@ -229,7 +230,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             playsInline
           ></video>}
           <video
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "#3832A0",opacity:isSimliLoading?0:1 ,position:"absolute"}}
+            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent",opacity:isSimliLoading?0:1 ,position:"absolute"}}
             ref={videoRef}
             key={"simli-video"}
             autoPlay

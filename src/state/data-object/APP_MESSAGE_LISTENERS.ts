@@ -16,6 +16,7 @@ import { pcmToWav } from "../../audio/pcmToWav";
 import { FormControls } from "../../form-control/FormControls";
 import { downsampleAudio, simliClient } from "../../app-front/betty-greeter/components/SimliCharacter";
 import { getTtsState, updateTtsState } from "../../tts/TtsState";
+import { convertToBoolean, getQueryParam } from "../../app-front/betty-greeter/utils/utils";
 
 export const APP_MESSAGE_LISTENERS: {
   [k in keyof AppMessageMap]: AppMessageListener<k>[];
@@ -187,13 +188,19 @@ export const APP_MESSAGE_LISTENERS: {
         ? pcmToWav(rawData, 24000)
         : rawData;
         
+       const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
+       if(convertToBoolean(isSimliEnabled)){
        simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
-      AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
-      updateTtsState((s) => {
+        
+       }else{
+      audioPlayer.enqueueAudioClip(wav);
+
+       }
+       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+       updateTtsState((s) => {
         s.isSpeaking = true
       })
       //TODO: use audioPlayer instead of simli
-      // audioPlayer.enqueueAudioClip(wav);
     },
   ],
   "appInterface:update": [

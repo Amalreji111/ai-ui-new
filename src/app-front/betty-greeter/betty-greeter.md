@@ -16,6 +16,18 @@ The pap id for showing the qrcode to transfer the chat.
 `` qrTransferPapId=1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8 ``
 find qrTransferPapId in the end of PAP url after access-point-
 
+
+## similiPreviewPath 
+The path for showing the simili preview. The file should located inside the r2 public url https://pub-95dde801fe1848caab87217ee3dc1307.r2.dev. File should be in mp4 format.
+### example usage:
+`` similiPreviewPath=simli-violet-preview ``
+
+## isSimliEnabled
+The boolean value for using the simli service. The default value is false.
+If isSimliEnabled false the default 3d character will be shown.
+### example usage:
+`` isSimliEnabled=true ``
+
 # / Params
 ## access points
 Pass the access points into the url in the following format to replace the character.
