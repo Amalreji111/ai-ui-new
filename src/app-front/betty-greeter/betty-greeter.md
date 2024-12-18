@@ -5,6 +5,24 @@ File path for the animation showing on the top header section. The file should l
 ### example usage:
 `` animationFileName=wave-animation ``
 
+## enableFacedetectionTimer
+The time for which face detection will be enabled when no voice is detected. The default value is 35 seconds.
+
+### example usage:  
+`` enableFacedetectionTimer=35 ``
+
+## enableFacedetection
+The boolean value for enabling face detection. The default value is true.
+### example usage:
+`` enableFacedetection=true ``
+
+## noFaceDetectionTimer
+The time duration for which the system tracks the absence of face to determine that no user is present.
+
+### example usage:
+`` noFaceDetectionTimer=15 ``
+
+
 ## animationHeight
 Setting the height of the animation. The default value is 400.
 ### example usage:

@@ -288,7 +288,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const { ttsEnabled } = useAppState();
   const {  parseResult,lastMessageTimestamp ,setTranscription} = useTranscription();
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
-  const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
+  const enableFacedetectionTimer = getQueryParamAsNumber("enableFacedetectionTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const characterBackground = getQueryParam("characterBackground", "transparent");
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8')
