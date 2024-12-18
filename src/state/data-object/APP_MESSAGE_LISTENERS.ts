@@ -187,7 +187,7 @@ export const APP_MESSAGE_LISTENERS: {
         ? pcmToWav(rawData, 24000)
         : rawData;
         
-        simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
+       simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
       updateTtsState((s) => {
         s.isSpeaking = true

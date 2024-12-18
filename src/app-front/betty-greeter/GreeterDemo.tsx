@@ -292,8 +292,10 @@ const IntelligageScreen: React.FC = memo(() => {
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const characterBackground = getQueryParam("characterBackground", "transparent");
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8')
-
-  let summary = useChatSummary(chat);
+  const animationFileName = getQueryParam("animationFileName", "wave-animation");
+  const animationHeight = getQueryParamAsNumber('animationHeight',400)
+  const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
+let summary = useChatSummary(chat);
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
   // console.log(summary,"Summary")
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
@@ -504,7 +506,6 @@ useEffect(() => {
   if (!ttsEnabled) {
     Ttss.enableTts();
   }
-
   return (
     <Frame>
        {chat&&<DebugDisplayContainer>
@@ -519,12 +520,12 @@ useEffect(() => {
 	    options={{
         loop: true,
         autoplay: true,
-        animationData: animationData,
+        path: animation,
         rendererSettings: {
           preserveAspectRatio: "xMidYMid slice"
         }
       }}
-        height={400}
+        height={animationHeight}
         // width={400}
       /> 
         </WaveAnimation>
