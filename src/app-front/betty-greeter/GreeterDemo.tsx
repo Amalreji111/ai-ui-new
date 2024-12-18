@@ -523,7 +523,7 @@ useEffect(() => {
           </DebugDisplayContainer> }
       <Container
       style={{
-        background: `linear-gradient(180deg, #${outerBackground??'3832A0'} 0%, #${outerBackground??'3832A0'} 70%, #000000 100%)`
+        background: `linear-gradient(180deg, ${outerBackground??'#3832A0'} 0%, ${outerBackground??'#3832A0'} 70%, #000000 100%)`
       }}
       >
         <WaveAnimation>

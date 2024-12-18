@@ -56,11 +56,16 @@ The face id for using the simli service. The default value is e4b0ecec-6af1-4cd6
 ### example usage:
 `` simliFaceId=e4b0ecec-6af1-4cd6-a870-ad490d0a6270 ```` 
 
-## outerBackground
-The colour code for the outer background. The default value is 3832A0.
+
+## characterBackground
+The colour  for the character background. The default value is transparent. For hex code use %23 followed by the hex code
 ### example usage:
-`` outerBackground=3832A0 ``
-Only works when passing the colour code in hex format.
+`` characterBackground=%233532B0 ``
+
+## outerBackground
+The colour  for the outer background. The default value is 3832A0. For hex code use %23 followed by the hex code
+### example usage:
+`` outerBackground=%233532B0 ``
 
 # / Params
 ## access points
