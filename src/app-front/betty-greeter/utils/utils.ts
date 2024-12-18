@@ -62,6 +62,6 @@ return await fetch(url, options)
     throw new Error(err);
   });
     }catch(error){
-      return `https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8?user.summary=${null}`
+      return `${originalUrl}?summary=${null}`
     }
   }

@@ -333,7 +333,9 @@ const previousCameraState =useRef(isCameraActive)
  }, [summary]); // React to changes in summary
 
  const generateShortUrl = async (summary: string) => {
-  const largeUrl = `https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8?user.summary=${summary}`;
+
+  const qrTransferPapId=getQueryParam("qrTransferPapId","1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8")
+  const largeUrl = `https://ai-workforce.intelligage.net/access-point-${qrTransferPapId}?user.summary=${summary}`;
   const shortUrl =await getShortUrl(largeUrl);
   setQrCodeUrl(shortUrl)
 
