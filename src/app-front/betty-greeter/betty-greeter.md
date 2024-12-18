@@ -9,3 +9,11 @@ File path for the animation showing on the top header section. The file should l
 Setting the height of the animation. The default value is 400.
 ### example usage:
 `` animationHeight=500``
+
+# / Params
+## access points
+Pass the access points into the url in the following format to replace the character.
+### example usage:
+`` <domain of greeter>/access-point-1732810105505-839046aa-cfba-4236-a863-7895cbf41ebf``
+Find the access point in the end of the PAP url.
+
