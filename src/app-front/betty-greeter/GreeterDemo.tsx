@@ -297,6 +297,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
   const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
   const similiPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
+  const outerBackground = getQueryParam("outerBackground", "3832A0");
 
 let summary = useChatSummary(chat);
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
@@ -520,7 +521,7 @@ useEffect(() => {
           </DebugDisplayContainer> }
       <Container
       style={{
-        // background:""
+        background: `linear-gradient(180deg, #${outerBackground??'3832A0'} 0%, #${outerBackground??'3832A0'} 70%, #000000 100%)`
       }}
       >
         <WaveAnimation>
@@ -540,9 +541,7 @@ useEffect(() => {
         // width={400}
       /> 
         </WaveAnimation>
-        <Content style={{ position: "relative",
-          // background:
-         }}>
+        <Content style={{ position: "relative"}}>
         <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />

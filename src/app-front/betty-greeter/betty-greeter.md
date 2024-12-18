@@ -28,6 +28,12 @@ If isSimliEnabled false the default 3d character will be shown.
 ### example usage:
 `` isSimliEnabled=true ``
 
+## outerBackground
+The colour code for the outer background. The default value is 3832A0.
+### example usage:
+`` outerBackground=3832A0 ``
+Only works when passing the colour code in hex format.
+
 # / Params
 ## access points
 Pass the access points into the url in the following format to replace the character.
