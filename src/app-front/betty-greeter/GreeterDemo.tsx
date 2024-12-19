@@ -296,7 +296,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
   const animationWidth = getQueryParamAsNumber('animationWidth',1000)
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
-  const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
+  const isSimliEnabled = getQueryParam("isSimliEnabled", "true");
   const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-violet-preview");
   const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
   const outerBackground = getQueryParam("outerBackground", "3832A0");
@@ -318,6 +318,7 @@ let summary = useChatSummary(chat);
   )
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
+ const {isSpeaking}=getTtsState()
  useEffect(() => {
    generateShortUrl(summary)
  },[])
@@ -364,8 +365,9 @@ useEffect(() => {
     faceDetectionActivationTimer.current = null;
   }
 
+  const isTtsSpeaking =convertToBoolean(isSimliEnabled)?isSpeaking:ttsSpeaking;
   // If neither TTS nor speaking is active, start the timer
-  if (!ttsSpeaking && !speaking) {
+  if (!isTtsSpeaking && !speaking) {
     faceDetectionActivationTimer.current = setTimeout(() => {
       console.log("enabling face detection");
       enableDetection();
@@ -379,7 +381,7 @@ useEffect(() => {
       faceDetectionActivationTimer.current = null;
     }
   };
-}, [ttsSpeaking, speaking, enableDetection]);
+}, [ttsSpeaking,isSpeaking, speaking, enableDetection]);
 
 useEffect(() => {
   console.log("isCameraActive", isCameraActive);

@@ -36,7 +36,7 @@ export default defineConfig({
     __SHORT_IO_DOMAIN__:JSON.stringify('link.intelligage.io'),
     __SIMLI_API_KEY__:JSON.stringify('16nybpxejyst74vd2c9kd'),
     __SIMLI_FACE_ID__:JSON.stringify("e4b0ecec-6af1-4cd6-a870-ad490d0a6270"),
-    __R2_BUCKET_ASSET_URL__:JSON.stringify('https://pub-95dde801fe1848caab87217ee3dc1307.r2.dev'),
+    __R2_BUCKET_ASSET_URL__:JSON.stringify('https://greeter-assets.intelligage.net'),
     // Local dev settings
     // __HOME_BASE__: JSON.stringify("http://localhost:8787"),
     // __PAP_ID__: JSON.stringify(
