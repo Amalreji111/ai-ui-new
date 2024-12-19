@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import styled,{ keyframes } from 'styled-components';
 
 // Import your assets here
@@ -264,7 +264,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const animationFileName = getQueryParam("animationFileName", "snow-fall");
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
   const animationWidth = getQueryParamAsNumber('animationWidth',1000)
-  const companyLogo = getQueryParam("companyLogo", "cutx-bank-logo");
+  const companyLogo = getQueryParam("companyLogo", null);
   const companyLogoFullPath = `${__R2_BUCKET_ASSET_URL__}/${companyLogo}.png`;
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
    let summary = useChatSummary(chat);
@@ -282,14 +282,15 @@ const IntelligageScreen: React.FC = memo(() => {
   )
  const {speaking} =getCustomAsrState()
  const ttsSpeaking = useIsTtsSpeaking();
+ const {isSpeaking}=getTtsState()
 
 
- const generateShortUrl = async (summary: string) => {
+ const generateShortUrl =useCallback( async (summary: string) => {
   const largeUrl = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
   const shortUrl =await getShortUrl(largeUrl);
   setQrCodeUrl(shortUrl)
 
- };
+ },[]);
  const previousSummaryRef = useRef(summary); // Store the previous summary
 const previousCameraState =useRef(isCameraActive)
  useEffect(() => {
@@ -340,8 +341,9 @@ useEffect(() => {
     faceDetectionActivationTimer.current = null;
   }
 
+  const isTtsSpeaking = convertToBoolean(isSimliEnabled)?isSpeaking:ttsSpeaking
   // If neither TTS nor speaking is active, start the timer
-  if (!ttsSpeaking && !speaking) {
+  if (!isTtsSpeaking && !speaking) {
     faceDetectionActivationTimer.current = setTimeout(() => {
       console.log("enabling face detection");
       enableDetection();
@@ -358,12 +360,12 @@ useEffect(() => {
 }, [ttsSpeaking, speaking, enableDetection]);
 
 const { audioContext } = getTtsState();
-  const greetUser = () => {
+  const greetUser = useCallback(() => {
     console.log("Hello! New face detected!");
     ChatStates.addChatMessage({ chat, text: "Hi" });
 
     // Your greeting logic goes here
-  };
+  },[]);
   useEffect(() => {
     if (!detected) {
       // If a timeout already exists, clear it to avoid multiple timers
@@ -472,7 +474,7 @@ const { audioContext } = getTtsState();
             
             {avatar}
             {
-              animate&&     <Lottie 
+              animate&&!convertToBoolean(isSimliEnabled)&&     <Lottie 
               speed={0.5}
               isStopped={!animate}
           options={{
@@ -506,8 +508,12 @@ const { audioContext } = getTtsState();
           </StatusIconContainer>}
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
           <QRContainer>
-            <img src={companyLogoFullPath} height={150} width={150} style={{zIndex:1}}/>
-            {/* <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/> */}
+            {
+              companyLogo? <img src={companyLogoFullPath} height={150} width={150} style={{zIndex:1}}/>
+              :
+              <QrCodeGenerator url={qrCodeUrl} height={150} width={150} style={{zIndex:1}}/>
+            }
+           
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             {/* <QRText>
             Scan to 

@@ -35,6 +35,9 @@ const QrCodeGenerator: React.FC<QrCodeGeneratorProps> = memo(({
       style={style}
     >
       <ReactQrCode 
+      style={{
+        zIndex: 100
+      }}
         value={url} 
         
         size={Math.min(width, height)}

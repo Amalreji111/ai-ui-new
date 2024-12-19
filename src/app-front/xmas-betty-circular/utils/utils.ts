@@ -7,7 +7,7 @@ export const getQueryParamAsNumber = (paramName: string, defaultValue: number): 
     return value ? parseInt(value, 10) : defaultValue;
   };
 
-  export const getQueryParam = (paramName: string, defaultValue: string): string => {
+  export const getQueryParam = (paramName: string, defaultValue: string|null) :any=> {
     if (typeof window === 'undefined') return defaultValue;
     const params = new URLSearchParams(window.location.search);
     const value = params.get(paramName);

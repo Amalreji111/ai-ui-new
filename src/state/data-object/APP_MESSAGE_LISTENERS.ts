@@ -188,15 +188,17 @@ export const APP_MESSAGE_LISTENERS: {
         ? pcmToWav(rawData, 24000)
         : rawData;
         
-       const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
+       const isSimliEnabled = getQueryParam("isSimliEnabled", "true");
        if(convertToBoolean(isSimliEnabled)){
        simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
         
        }else{
+       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+
       audioPlayer.enqueueAudioClip(wav);
 
        }
-       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+       
        updateTtsState((s) => {
         s.isSpeaking = true
       })
