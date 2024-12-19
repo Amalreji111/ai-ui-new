@@ -5,7 +5,6 @@ import styled,{ keyframes } from 'styled-components';
 import qrCodeImage from './assets/qrcode.png';
 import intelliageImage from './assets/intelligage.png';
 import intelliageLogo from './assets/intelligage-logo.png';
-import BankLogo from './assets/bank_logo.webp';
 import XmasBackground from './assets/BG_red_xmas.webp'
 import SnowFallAnimation from './assets/snow-fall.json'
 import { useIsTtsSpeaking } from '../../tts/useIsTtsSpeaking';
@@ -253,7 +252,7 @@ const IntelligageScreen: React.FC = memo(() => {
   const { ttsEnabled } = useAppState();
   const {  parseResult,lastMessageTimestamp ,setTranscription} = useTranscription();
   const noFaceDetectionTimer = getQueryParamAsNumber("noFaceDetectionTimer", 15);
-  const enableFacedetectionTimer = getQueryParamAsNumber("noVoiceActivityTimer", 35)*1000;
+  const enableFacedetectionTimer = getQueryParamAsNumber("enableFacedetectionTimer", 35)*1000;
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const needIndicators = getQueryParam("needIndicators", "false");
   const characterBackground = getQueryParam("characterBackground", "transparent");
@@ -262,8 +261,13 @@ const IntelligageScreen: React.FC = memo(() => {
   const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
   const outerBackground = getQueryParam("outerBackground", "black");
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12')
-
-  let summary = useChatSummary(chat);
+  const animationFileName = getQueryParam("animationFileName", "snow-fall");
+  const animationHeight = getQueryParamAsNumber('animationHeight',400)
+  const animationWidth = getQueryParamAsNumber('animationWidth',1000)
+  const companyLogo = getQueryParam("companyLogo", "cutx-bank-logo");
+  const companyLogoFullPath = `${__R2_BUCKET_ASSET_URL__}/${companyLogo}.png`;
+  const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
+   let summary = useChatSummary(chat);
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
     minDetectionConfidence: 0.5,
     model: "short"
@@ -474,7 +478,7 @@ const { audioContext } = getTtsState();
           options={{
             loop: true,
             autoplay: true,
-            animationData: SnowFallAnimation,
+            path:animation,
             rendererSettings: {
               preserveAspectRatio: "xMidYMid slice"
             }
@@ -482,11 +486,12 @@ const { audioContext } = getTtsState();
           style={{
             position: "absolute",
             top: 0,
-            width: "100%",
-            height: "100%"
+            width: animationWidth,
+            height: animationHeight
           }}
-            height={400}
-            // width={400}
+          height= {animationHeight}
+
+            width={animationWidth}
           /> 
             }
        
@@ -501,7 +506,7 @@ const { audioContext } = getTtsState();
           </StatusIconContainer>}
           <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
           <QRContainer>
-            <img src={BankLogo} height={150} width={150} style={{zIndex:1}}/>
+            <img src={companyLogoFullPath} height={150} width={150} style={{zIndex:1}}/>
             {/* <QrCodeGenerator url={QR_CODE_URL} height={100} width={100}/> */}
             {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
             {/* <QRText>
