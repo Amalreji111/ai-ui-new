@@ -5,3 +5,6 @@ declare const __APP_FRONT__: string;
 declare const __HOME_BASE__: string;
 declare const __SHORT_IO_KEY__: string;
 declare const __SHORT_IO_DOMAIN__: string;
+declare const __SIMLI_API_KEY__: string;
+declare const __SIMLI_FACE_ID__: string;
+declare const __R2_BUCKET_ASSET_URL__: string;

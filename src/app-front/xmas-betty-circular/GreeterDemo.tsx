@@ -32,6 +32,7 @@ import CameraIcon from './components/Camera';
 import { ChatDebugDisplay } from '../../ui/chat/mind/ChatDebugDisplay';
 import QrCodeGenerator from './components/QrCode';
 import { useChatSummary } from './hooks/useSummary';
+import SimliCharacter from './components/SimliCharacter';
 // width: 100%;
 
 
@@ -256,6 +257,9 @@ const IntelligageScreen: React.FC = memo(() => {
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const needIndicators = getQueryParam("needIndicators", "false");
   const characterBackground = getQueryParam("characterBackground", "transparent");
+  const isSimliEnabled = getQueryParam("isSimliEnabled", "true");
+  const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-black-preview");
+  const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
   const outerBackground = getQueryParam("outerBackground", "black");
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12')
 
@@ -395,6 +399,23 @@ const { audioContext } = getTtsState();
       ? characters.find(x=>x.id===chat.userCharacterId)
       : undefined;
       const avatar = character ? (
+        isCameraActive&& convertToBoolean(isSimliEnabled)?
+        <SimliCharacter
+        simili_api_key={__SIMLI_API_KEY__}
+        simli_faceid={simliFaceId}
+        ttsAnalyzer={getTtsState().currentSource}
+        needDummy={true}
+        similiPath={simliPreviewPath}
+        />
+        :convertToBoolean(isSimliEnabled)?
+        <SimliCharacter
+        simili_api_key={__SIMLI_API_KEY__}
+        simli_faceid={simliFaceId}
+        ttsAnalyzer={getTtsState().currentSource}
+        needDummy={false}
+        similiPath={simliPreviewPath}
+
+        />:
         <CharacterAvatar
           hoverActions={["Chat With {char}"]}
           showHoverButtons={false}
@@ -443,7 +464,7 @@ const { audioContext } = getTtsState();
           
 
           <CircularDisplayContainer style={{ backgroundColor:characterBackground??"transparent" }}>
-            <CharacterContainer style={{ backgroundColor:characterBackground??"transparent" }}>
+            <CharacterContainer style={{ backgroundColor:characterBackground??"transparent", }}>
             
             {avatar}
             {
@@ -471,7 +492,7 @@ const { audioContext } = getTtsState();
        
             </CharacterContainer>
             {/* <Overlay></Overlay> */}
-            <FooterContainer>
+            <FooterContainer style={{zIndex:101}}>
               <FooterBackgroundImage src={XmasBackground} />
            {convertToBoolean(needIndicators)&& <StatusIconContainer>
           <FaceIcon isActive={detected} />

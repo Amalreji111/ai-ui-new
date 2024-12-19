@@ -14,6 +14,9 @@ import { AppModes } from "../location/AppModes";
 import { switchWindow } from "../../ui/switchWindow";
 import { pcmToWav } from "../../audio/pcmToWav";
 import { FormControls } from "../../form-control/FormControls";
+import { downsampleAudio, simliClient } from "../../app-front/xmas-betty-circular/components/SimliCharacter";
+import { getTtsState, updateTtsState } from "../../tts/TtsState";
+import { convertToBoolean, getQueryParam } from "../../app-front/xmas-betty-circular/utils/utils";
 
 export const APP_MESSAGE_LISTENERS: {
   [k in keyof AppMessageMap]: AppMessageListener<k>[];
@@ -184,9 +187,20 @@ export const APP_MESSAGE_LISTENERS: {
       const wav = mediaType.startsWith("audio/L16")
         ? pcmToWav(rawData, 24000)
         : rawData;
-
-      AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+        
+       const isSimliEnabled = getQueryParam("isSimliEnabled", "false");
+       if(convertToBoolean(isSimliEnabled)){
+       simliClient.sendAudioData(downsampleAudio(new Int16Array(rawData),24000,16000)as unknown as any);
+        
+       }else{
       audioPlayer.enqueueAudioClip(wav);
+
+       }
+       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+       updateTtsState((s) => {
+        s.isSpeaking = true
+      })
+      //TODO: use audioPlayer instead of simli
     },
   ],
   "appInterface:update": [
