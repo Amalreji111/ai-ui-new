@@ -160,7 +160,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             handleSilence: true,
             videoRef: videoRef,
             audioRef: audioRef,
-            // SimliURL:"s://api.simli.ai"
+            SimliURL:"s://api.simli.ai"
           };
     
           simliClient.Initialize(SimliConfig as any);
@@ -212,7 +212,6 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
         position: "relative",
     }
       if (props.needDummy ) {
-        console.log("needDummy");
         return (
           <video
             style={videoStyle}
