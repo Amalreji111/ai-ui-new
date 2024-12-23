@@ -305,8 +305,11 @@ let summary = useChatSummary(chat);
   // const QR_CODE_URL=' https://ai-workforce.intelligage.net/access-point-1733145816811-31963650-dd94-4552-b2e9-7af5d5946a48'
   // console.log(summary,"Summary")
   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
-    minDetectionConfidence: 0.5,
-    model: "short"
+    minDetectionConfidence: 0.8,
+    model: 'short',
+    consecutiveDetectionsRequired: 3,
+    detectionThreshold: 0.75,
+    maxFaces: 1
   });
   const noFaceTimeout = useRef<NodeJS.Timeout | null>(null);
   const isCooldown = useRef<boolean>(false);

@@ -6,6 +6,7 @@ interface BoundingBox {
   yCenter: number;
   width: number;
   height: number;
+  score: number;  // Added confidence score
 }
 
 interface UseFaceDetectionReturn {
@@ -25,6 +26,9 @@ interface FaceDetectionOptions {
   minDetectionConfidence?: number;
   model?: 'short' | 'full';
   initialEnabled?: boolean;
+  consecutiveDetectionsRequired?: number;  // New option
+  detectionThreshold?: number;  // New option
+  maxFaces?: number;  // New option
 }
 
 declare global {
@@ -48,38 +52,52 @@ export const useFaceDetectionNew = (
     const enableFacedetection = getQueryParam("enableFacedetection", "true");
     return options.initialEnabled ?? convertToBoolean(enableFacedetection);
   });
+
+  // Detection stability tracking
+  const consecutiveDetectionsRef = useRef(0);
+  const lastValidDetectionRef = useRef<BoundingBox[]>([]);
   
   const cameraRef = useRef<any>(null);
   const detectionRef = useRef<any>(null);
 
-  // Control functions
-  const enableDetection = () => {
-    setIsEnabled(true);
+  // Configuration constants with defaults
+  const CONSECUTIVE_DETECTIONS_REQUIRED = options.consecutiveDetectionsRequired ?? 3;
+  const DETECTION_THRESHOLD = options.detectionThreshold ?? 0.7;  // Higher confidence threshold
+  const MAX_FACES = options.maxFaces ?? 1;  // Limit number of faces
+
+  // Utility function to validate detections
+  const isValidDetection = (detection: any) => {
+    // Check confidence score
+    if (detection.score < DETECTION_THRESHOLD) return false;
+
+    // Basic proportion checks for face (typical face aspect ratio is around 1.3-1.5)
+    const aspectRatio = detection.boundingBox.width / detection.boundingBox.height;
+    if (aspectRatio < 0.5 || aspectRatio > 2.0) return false;
+
+    // Size validation (prevent tiny or huge detections)
+    if (detection.boundingBox.width < 0.1 || detection.boundingBox.width > 0.9) return false;
+    if (detection.boundingBox.height < 0.1 || detection.boundingBox.height > 0.9) return false;
+
+    return true;
   };
 
-  const disableDetection = () => {
-    setIsEnabled(false);
-  };
+  // Control functions remain the same
+  const enableDetection = () => setIsEnabled(true);
+  const disableDetection = () => setIsEnabled(false);
+  const toggleDetection = () => setIsEnabled(prev => !prev);
 
-  const toggleDetection = () => {
-    setIsEnabled(prev => !prev);
-  };
-
-  // Load MediaPipe scripts
+  // MediaPipe scripts loading logic remains the same
   useEffect(() => {
     const loadScripts = async () => {
       try {
-        // Load Face Detection
         const faceDetectionScript = document.createElement('script');
         faceDetectionScript.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/face_detection@0.4/face_detection.js';
         faceDetectionScript.async = true;
         
-        // Load Camera Utils
         const cameraScript = document.createElement('script');
         cameraScript.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js';
         cameraScript.async = true;
 
-        // Wait for both scripts to load
         await Promise.all([
           new Promise((resolve) => {
             faceDetectionScript.onload = resolve;
@@ -99,19 +117,15 @@ export const useFaceDetectionNew = (
     };
 
     loadScripts();
-
-    // Cleanup
     return () => {
       const scripts = document.querySelectorAll('script[src*="mediapipe"]');
       scripts.forEach(script => script.remove());
     };
   }, []);
 
-  // Initialize face detection
+  // Initialize face detection with enhanced validation
   useEffect(() => {
-    if (!modulesLoaded || !window.FaceDetection || !window.Camera) {
-      return;
-    }
+    if (!modulesLoaded || !window.FaceDetection || !window.Camera) return;
 
     const initializeFaceDetection = async () => {
       try {
@@ -121,23 +135,44 @@ export const useFaceDetectionNew = (
         });
 
         detectionRef.current.setOptions({
-          model: options.model,
-          minDetectionConfidence: options.minDetectionConfidence || 0.5
+          model: options.model || 'full',  // Default to full model for better accuracy
+          minDetectionConfidence: options.minDetectionConfidence || 0.7,  // Increased base confidence
+          maxNumFaces: MAX_FACES
         });
 
         detectionRef.current.onResults((results: any) => {
           if (results.detections) {
-            const boxes: BoundingBox[] = results.detections.map((detection: any) => ({
-              xCenter: detection.boundingBox.xCenter,
-              yCenter: detection.boundingBox.yCenter,
-              width: detection.boundingBox.width,
-              height: detection.boundingBox.height
-            }));
+            // Filter and validate detections
+            const validDetections = results.detections
+              .filter(isValidDetection)
+              .slice(0, MAX_FACES)
+              .map((detection: any) => ({
+                xCenter: detection.boundingBox.xCenter,
+                yCenter: detection.boundingBox.yCenter,
+                width: detection.boundingBox.width,
+                height: detection.boundingBox.height,
+                score: detection.score
+              }));
 
-            setBoundingBox(boxes);
-            setTimeout(() =>  setDetected(boxes.length > 0), 2000);
-           
-            setFacesDetected(boxes.length);
+            // Update detection stability tracking
+            if (validDetections.length > 0) {
+              consecutiveDetectionsRef.current++;
+              lastValidDetectionRef.current = validDetections;
+            } else {
+              consecutiveDetectionsRef.current = 0;
+            }
+
+            // Update state based on detection stability
+            if (consecutiveDetectionsRef.current >= CONSECUTIVE_DETECTIONS_REQUIRED) {
+              setBoundingBox(lastValidDetectionRef.current);
+              setDetected(true);
+              setFacesDetected(lastValidDetectionRef.current.length);
+            } else if (consecutiveDetectionsRef.current === 0) {
+              setBoundingBox([]);
+              setDetected(false);
+              setFacesDetected(0);
+            }
+
             setIsLoading(false);
           }
         });
@@ -174,7 +209,7 @@ export const useFaceDetectionNew = (
     };
   }, [modulesLoaded, options.minDetectionConfidence, options.model]);
 
-  // Handle enable/disable toggle
+  // Enable/disable toggle effect remains the same
   useEffect(() => {
     if (!cameraRef.current) return;
 
@@ -182,11 +217,10 @@ export const useFaceDetectionNew = (
       try {
         if (isEnabled) {
           await cameraRef.current.start();
-        setIsCameraActive(true);
-
+          setIsCameraActive(true);
         } else {
           await cameraRef.current.stop();
-        setIsCameraActive(false);
+          setIsCameraActive(false);
           setBoundingBox([]);
           setDetected(false);
           setFacesDetected(0);
