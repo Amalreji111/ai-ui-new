@@ -214,6 +214,8 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
     }
       if (props.needDummy ) {
         return (
+          <div style={{position:"relative",width: "340px", height: "340px"}}>
+
           <video
             style={videoStyle}
             src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
@@ -223,12 +225,13 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             autoPlay
             playsInline
           ></video>
+          </div>
         );
       }
     
       return (
-        <>
-          {/* {
+        <div style={{position:"relative",width: "340px", height: "340px"}}>
+          {
             isSimliLoading && <video 
             style={{...videoStyle, zIndex: isSimliLoading ? 100 : 99}}
             src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
@@ -237,7 +240,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             key={"simli-video-1"}
             autoPlay
             playsInline
-          ></video>} */}
+          ></video>}
           <video
             style={{...videoStyle, zIndex: isSimliLoading ? 99 : 100}}
             ref={videoRef}
@@ -246,7 +249,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             playsInline
           ></video>
           <audio ref={audioRef} autoPlay playsInline></audio>
-        </>
+        </div>
       
   )
 })
