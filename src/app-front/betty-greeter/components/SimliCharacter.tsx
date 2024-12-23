@@ -133,9 +133,9 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
 
           simliClient?.on('speaking', () => {
             //TODO: This method is slow
-            //   updateTtsState((s) => {
-            //       s.isSpeaking = true
-            //   })
+              updateTtsState((s) => {
+                  s.isSpeaking = true
+              })
           })
 
           simliClient?.on('silent', () => {

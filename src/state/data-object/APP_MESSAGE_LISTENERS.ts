@@ -194,12 +194,12 @@ export const APP_MESSAGE_LISTENERS: {
         
        }else{
       audioPlayer.enqueueAudioClip(wav);
-
-       }
-       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
-       updateTtsState((s) => {
+      updateTtsState((s) => {
         s.isSpeaking = true
       })
+       }
+       AppEvents.dispatchEvent("ttsAudioWav", wav.slice(0));
+     
       //TODO: use audioPlayer instead of simli
     },
   ],

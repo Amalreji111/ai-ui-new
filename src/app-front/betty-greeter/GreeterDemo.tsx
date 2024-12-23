@@ -347,7 +347,7 @@ const previousCameraState =useRef(isCameraActive)
   setQrCodeUrl(shortUrl)
 
  };
-useEffect(() => {
+ useEffect(() => {
   /**
    * Logic:
    * 1) If either TTS or speaking is active:
@@ -365,7 +365,7 @@ useEffect(() => {
     faceDetectionActivationTimer.current = null;
   }
 
-  const isTtsSpeaking =convertToBoolean(isSimliEnabled)?isSpeaking:ttsSpeaking;
+  const isTtsSpeaking = convertToBoolean(isSimliEnabled)?isSpeaking:ttsSpeaking
   // If neither TTS nor speaking is active, start the timer
   if (!isTtsSpeaking && !speaking) {
     faceDetectionActivationTimer.current = setTimeout(() => {
@@ -381,10 +381,9 @@ useEffect(() => {
       faceDetectionActivationTimer.current = null;
     }
   };
-}, [ttsSpeaking,isSpeaking, speaking, enableDetection]);
+}, [ttsSpeaking, speaking, enableDetection]);
 
 useEffect(() => {
-  console.log("isCameraActive", isCameraActive);
 
   if (previousCameraState.current !== isCameraActive) {
     if (isCameraActive) {
