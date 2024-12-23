@@ -205,8 +205,10 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
     
       if (props.needDummy ) {
         return (
+        <div style={{position:"relative",width: "100%",top:"0px", height: "900px"}}>
+
           <video
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent" ,position:"absolute"}}
+            style={{ zIndex: 100, width: "100%",top:"0px", height: "900px", background: "transparent" ,position:"absolute"}}
             src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
             loop
             muted
@@ -214,14 +216,16 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             autoPlay
             playsInline
           ></video>
+        </div>
         );
       }
     
       return (
-        <>
+        <div style={{position:"relative",width: "100%",top:"0px", height: "900px"}}>
           {
-            isSimliLoading && <video 
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent" ,opacity:isSimliLoading?1:0,position:"absolute"}}
+            isSimliLoading && 
+            <video 
+            style={{ zIndex: 100, width: "100%",top:"0px", height: "900px", background: "transparent" ,opacity:isSimliLoading?1:0,position:"absolute"}}
             src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
             loop
             muted
@@ -230,14 +234,14 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             playsInline
           ></video>}
           <video
-            style={{ zIndex: 100, width: "100%",top:"50px", height: "550px", background: "transparent",opacity:isSimliLoading?0:1 ,position:"absolute"}}
+            style={{ zIndex: 100, width: "100%",top:"0px", height: "900px", background: "transparent",opacity:isSimliLoading?0:1 ,position:"absolute"}}
             ref={videoRef}
             key={"simli-video"}
             autoPlay
             playsInline
           ></video>
           <audio ref={audioRef} autoPlay playsInline></audio>
-        </>
+        </div>
       
   )
 })

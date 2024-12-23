@@ -192,6 +192,7 @@ const TypeOverlayContainer = styled.div`
   left: 50%;
   transform: translate(-50%, 0);
   overflow-y: auto;
+  z-index: 1000;
   scrollbar-width: none; // Firefox
   -ms-overflow-style: none; // IE and Edge
 
