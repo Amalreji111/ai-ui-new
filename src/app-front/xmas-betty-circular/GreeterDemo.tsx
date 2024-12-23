@@ -270,9 +270,12 @@ const IntelligageScreen: React.FC = memo(() => {
   const companyLogoFullPath = `${__R2_BUCKET_ASSET_URL__}/${companyLogo}.png`;
   const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
    let summary = useChatSummary(chat);
-  const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
-    minDetectionConfidence: 0.5,
-    model: "short"
+   const { webcamRef, detected, isCameraActive ,disableDetection,enableDetection} = useFaceDetectionNew({
+    minDetectionConfidence: 0.8,
+    model: 'short',
+    consecutiveDetectionsRequired: 3,
+    detectionThreshold: 0.75,
+    maxFaces: 1
   });
   const noFaceTimeout = useRef<NodeJS.Timeout | null>(null);
   const isCooldown = useRef<boolean>(false);
