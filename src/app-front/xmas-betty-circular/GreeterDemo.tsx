@@ -159,7 +159,7 @@ const TextContainer = styled.div`
 `;
 
 const StyledText = styled.span`
-  background: transparent;
+  background: black;
   text-align: center;
   padding: 0 10px;
 `;
@@ -256,6 +256,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
   const needIndicators = getQueryParam("needIndicators", "false");
   const characterBackground = getQueryParam("characterBackground", "transparent");
+  const backgroundImage = getQueryParam("backgroundImage", "betty-xmas");
+  const backgroundImageFullPath = `${__R2_BUCKET_ASSET_URL__}/${backgroundImage}.png`;
   const isSimliEnabled = getQueryParam("isSimliEnabled", "true");
   const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-black-preview");
   const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
@@ -500,7 +502,7 @@ const { audioContext } = getTtsState();
             </CharacterContainer>
             {/* <Overlay></Overlay> */}
             <FooterContainer style={{zIndex:101}}>
-              <FooterBackgroundImage src={XmasBackground} />
+              <FooterBackgroundImage src={backgroundImageFullPath} />
            {convertToBoolean(needIndicators)&& <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />

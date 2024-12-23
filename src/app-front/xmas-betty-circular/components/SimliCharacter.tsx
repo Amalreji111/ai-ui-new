@@ -117,7 +117,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
             setTimeout(() => {
             setIsSimliLoading(false);
               
-            }, 1000);
+            }, 5000);
 
             // const streamTrack = props.ttsAnalyzer.createMediaStreamDestination().stream;
             // console.log("streamTrack",streamTrack);
@@ -133,9 +133,10 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
 
           simliClient?.on('speaking', () => {
             //TODO: This method is slow
-            //   updateTtsState((s) => {
-            //       s.isSpeaking = true
-            //   })
+            console.log("Speaking");
+              updateTtsState((s) => {
+                  s.isSpeaking = true
+              })
           })
 
           simliClient?.on('silent', () => {
@@ -153,7 +154,7 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
         console.log("API key:", props.simili_api_key);
         console.log("Face ID:", props.simli_faceid);
         if (videoRef.current && audioRef.current) {
-          // setIsSimliLoading(true);
+          setIsSimliLoading(true);
           const SimliConfig = {
             apiKey: props.simili_api_key,
             faceID: props.simli_faceid,
@@ -227,18 +228,18 @@ const SimliCharacter =  memo((props: SimliCharacterProps) => {
     
       return (
         <>
-          {
+          {/* {
             isSimliLoading && <video 
-            style={videoStyle}
+            style={{...videoStyle, zIndex: isSimliLoading ? 100 : 99}}
             src={`${__R2_BUCKET_ASSET_URL__}/${props.similiPath}.mp4`}
             loop
             muted
             key={"simli-video-1"}
             autoPlay
             playsInline
-          ></video>}
+          ></video>} */}
           <video
-            style={videoStyle}
+            style={{...videoStyle, zIndex: isSimliLoading ? 99 : 100}}
             ref={videoRef}
             key={"simli-video"}
             autoPlay
