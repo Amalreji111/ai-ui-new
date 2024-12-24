@@ -291,7 +291,9 @@ const IntelligageScreen: React.FC = memo(() => {
 
 
  const generateShortUrl =useCallback( async (summary: string) => {
-  const largeUrl = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
+  const qrTransferPapId=getQueryParam("qrTransferPapId","1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12")
+  const largeUrl = `https://ai-workforce.intelligage.net/access-point-${qrTransferPapId}?user.summary=${summary}`;
+  // const largeUrl = `https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12?user.summary=${summary}`;
   const shortUrl =await getShortUrl(largeUrl);
   setQrCodeUrl(shortUrl)
 
