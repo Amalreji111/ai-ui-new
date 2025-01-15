@@ -266,6 +266,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const outerBackground = getQueryParam("outerBackground", "black");
   const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1731431369995-8101bbef-c774-4422-9e62-01f2c0c1ea12')
   const animationFileName = getQueryParam("animationFileName", "snow-fall");
+  const characterHeight = getQueryParam('characterHeight','400px')
+  const characterWidth = getQueryParam('characterWidth','400px')
   const animationHeight = getQueryParamAsNumber('animationHeight',400)
   const animationWidth = getQueryParamAsNumber('animationWidth',1000)
   const companyLogo = getQueryParam("companyLogo", null);
@@ -436,8 +438,8 @@ const { audioContext } = getTtsState();
           showHoverButtons={false}
           imageStyle={{
             objectFit: 'cover',
-            width: "400px",
-            height: "400px",
+            width: "500px",
+            height: "500px",
            }}
            style={{
             backgroundColor:characterBackground??"transparent",
@@ -448,6 +450,7 @@ const { audioContext } = getTtsState();
           character={aiChar}
           showName={false}
           show3dAvatar={convertToBoolean(enable3dCharacter)}
+          canvasStyle={{ maxWidth: characterWidth, maxHeight: characterHeight,zIndex:5 }}
           showContextMenu={false}
           enableDocumentDrop={false}
         analyserNode={ttsAnalyzer}

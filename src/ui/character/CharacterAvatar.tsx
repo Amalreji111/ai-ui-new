@@ -66,6 +66,7 @@ export const CharacterAvatar = memo(
     avatar3dCanvasWidth,
     avatar3dCanvasHeight,
     avatar3dCameraOptions,
+    canvasStyle=null,
     ...rest
   }: CardProps & {
     video?: ByteLike;
@@ -88,6 +89,7 @@ export const CharacterAvatar = memo(
     onClick?: (characterId: string) => void;
     analyserNode?: AnalyserNode;
     avatar3dCameraOptions?: ArcRotateCameraOptions;
+    canvasStyle?: CSSProperties|null;
   }) => {
     const [pointerOver, setPointerOver] = useState(false);
     const [videoEnded, setVideoEnded] = useState(false);
@@ -244,7 +246,7 @@ export const CharacterAvatar = memo(
                           analyserNode={analyserNode}
                           canvasWidth={avatar3dCanvasWidth}
                           canvasHeight={avatar3dCanvasHeight}
-                          canvasStyle={{ maxWidth: "500px", maxHeight: "500px" }}
+                          canvasStyle={{ maxWidth: "400px", maxHeight: "400px",...(canvasStyle??canvasStyle) }}
                           gltfCameraOptions={avatar3dCameraOptions}
                           animationPath={
                             character.card.data.extensions.avatar3dAnimationUrl
