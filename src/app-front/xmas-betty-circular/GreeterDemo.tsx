@@ -258,6 +258,8 @@ const IntelligageScreen: React.FC = memo(() => {
   const characterBackground = getQueryParam("characterBackground", "transparent");
   const backgroundImage = getQueryParam("backgroundImage", "betty-xmas");
   const backgroundImageFullPath = `${__R2_BUCKET_ASSET_URL__}/${backgroundImage}.png`;
+  const needSolidColorBackground = getQueryParam("needSolidColorBackground", "false");
+  const footerBackgroundColor = getQueryParam("footerBackgroundColor", "#3832A0");
   const isSimliEnabled = getQueryParam("isSimliEnabled", "true");
   const simliPreviewPath = getQueryParam("simliPreviewPath", "simli-black-preview");
   const simliFaceId = getQueryParam("simliFaceId",__SIMLI_FACE_ID__);
@@ -506,8 +508,14 @@ const { audioContext } = getTtsState();
        
             </CharacterContainer>
             {/* <Overlay></Overlay> */}
-            <FooterContainer style={{zIndex:101}}>
-              <FooterBackgroundImage src={backgroundImageFullPath} />
+            <FooterContainer style={{
+              zIndex:101,
+              ...(convertToBoolean(needSolidColorBackground)&&{backgroundColor:footerBackgroundColor??'#3832A0'})
+            }}>
+              {
+                convertToBoolean(needSolidColorBackground)===false&&<FooterBackgroundImage src={backgroundImageFullPath} />
+
+              }
            {convertToBoolean(needIndicators)&& <StatusIconContainer>
           <FaceIcon isActive={detected} />
           <ListeningIcon isActive={speaking} />
