@@ -13,6 +13,7 @@ const useTranscription = () => {
   const [transcription, setTranscription] = useState("");
   const {isSpeaking}= getTtsState()
 
+  const isTTSSpeaking = useIsTtsSpeaking()
   // Filter chat messages and build realAndImaginedMessages array
   let realAndImaginedMessages: any[] = [];
   if (chat) {
@@ -30,7 +31,7 @@ const useTranscription = () => {
           characterId: chat.aiCharacterId,
         });
 
-    realAndImaginedMessages = [...orderedMessages, speakerMessage,simliClient.isAvatarSpeaking].filter(Boolean);
+    realAndImaginedMessages = [...orderedMessages, speakerMessage,isTTSSpeaking].filter(Boolean);
   }
 
   // Extract the latest assistant message and its timestamp
@@ -46,7 +47,7 @@ const useTranscription = () => {
     : 0;
 
   let parseResult = null;
-  if (transcript &&isSpeaking) {
+  if (transcript &&isTTSSpeaking) {
     parseResult = AiFunctions.parseAiFunctionText(
       Chats.chatMessageToText(transcript),
       { aiFunctionPrefix: ".?" }

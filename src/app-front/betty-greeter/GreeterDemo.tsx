@@ -42,8 +42,7 @@ const Container = styled.div`
 `;
 
 const Frame = styled.div`
-  position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100%;
   background:black;
 
@@ -83,14 +82,6 @@ const ImageContainer = styled.div`
   }
 `;
 
-const AssistantImage = styled.div`
-  position: absolute;
-  width: 100%;
-
-  top:-100%;
-  left:0;
-  height: auto;
-`;
 
 const Footer = styled.div`
   position: relative;
@@ -521,6 +512,10 @@ useEffect(() => {
   if (!ttsEnabled) {
     Ttss.enableTts();
   }
+
+  return (
+    <div>Hello</div>
+  )
   return (
     <Frame>
        {chat&&<DebugDisplayContainer>

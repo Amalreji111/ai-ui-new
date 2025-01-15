@@ -4,6 +4,7 @@ import { hideLoadingScreen } from "../../ui/hideLoadingScreen";
 import GreeterDemo from "./GreeterDemo";
 import { greeterDemoConfig } from "./greeterDemoConfig";
 import { Theme } from "@radix-ui/themes";
+import GreeterDemo2 from "./GreeterDemo2";
 
 export const BettyDemoFront = () => {
   useEffect(() => {
@@ -14,7 +15,7 @@ export const BettyDemoFront = () => {
     <AiplComponentProvider config={greeterDemoConfig}>
       <Theme>
 
-      <GreeterDemo />
+      <GreeterDemo2 />
       </Theme>
     </AiplComponentProvider>
   );

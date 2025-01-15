@@ -205,7 +205,7 @@ export const CharacterAvatar = memo(
           {...rest}
         >
           <Flex gap="2" direction={"column"}>
-            <Flex>
+            <Flex justify={'center'}>
               <AnimatePresence mode="wait">
                 {isDefined(video) && !videoEnded ? (
                   <motion.div
@@ -215,7 +215,7 @@ export const CharacterAvatar = memo(
                     key="greeting-video-active-motion"
                   >
                     <VideoPlayer
-                      style={{ maxHeight: "50vh", maxWidth: "80vw" }}
+                      style={{ maxHeight: "500px", maxWidth: "400px" }}
                       onEnded={() => {
                         setVideoEnded(true);
                       }}
@@ -235,6 +235,8 @@ export const CharacterAvatar = memo(
                         style={{
                           height: "100%",
                           width: "100%",
+                          justifyContent: "center",
+                          alignItems: "center",
                           overflow: "auto",
                           ...style,
                         }}
@@ -244,7 +246,8 @@ export const CharacterAvatar = memo(
                           analyserNode={analyserNode}
                           canvasWidth={avatar3dCanvasWidth}
                           canvasHeight={avatar3dCanvasHeight}
-                          canvasStyle={{ height: "100%", width: "100%" ,position:"absolute" }}
+                          canvasStyle={{ maxHeight: "100%", maxWidth: "100%", minHeight: "100%", minWidth: "100%",position:"relative",bottom:80 }}
+                          style={{ height: "100%", width: "100%"}}
                           gltfCameraOptions={avatar3dCameraOptions}
                           animationPath={
                             character.card.data.extensions.avatar3dAnimationUrl
