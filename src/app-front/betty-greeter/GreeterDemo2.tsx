@@ -15,7 +15,7 @@ import QrCodeGenerator from './components/QrCode';
 import { AsrCustoms } from '../../asr-custom/AsrCustoms';
 import { Ttss } from '../../tts/Ttss';
 import { ChatStates } from '../../state/chat/ChatStates';
-
+import SendIcon from "./assets/send_icon.png"
 const TypingOverlay = memo(
   ({ text, typingSpeed = 40 }: { text: string; typingSpeed?: number }) => {
     const [displayedText, setDisplayedText] = useState("");
@@ -186,13 +186,15 @@ const GreeterDemo2 = () => {
             </QRText>
           </QRContainer>
         <ChatContainer>
-          <form onSubmit={handleSubmitUserChat}>
+          <form style={{width:"100%",display:"flex"}}onSubmit={handleSubmitUserChat}>
           <ChatInput
                ref={userChatRef}
                type="text"
                name="userMessage"
                placeholder="Type your message..." />
-          <SendButton type={'submit'}>Send</SendButton>
+          <SendButton  type={'submit'}>
+            <img src={SendIcon} height={20} width={20} alt="Send" />
+          </SendButton>
           </form>
 
 </ChatContainer>

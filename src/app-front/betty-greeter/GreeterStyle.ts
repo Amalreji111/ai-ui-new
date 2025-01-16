@@ -69,8 +69,9 @@ export const ChatContainer = styled.div`
 
 export const ChatInput = styled.input`
   flex: 1;
-  padding: 10px 15px;
+  padding: 10px;
   border: 1px solid #ccc;
+  width:80%;
   outline: none;
   font-size: 16px;
   margin-right: 10px;
@@ -79,10 +80,12 @@ export const ChatInput = styled.input`
 
 export const SendButton = styled.button`
   background-color: #007bff;
+  width:15%;
   color: white;
   border: none;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 10px ;
+  align-self: center;
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
