@@ -63,7 +63,7 @@ const GreeterDemo2 = () => {
     const enable3dCharacter = getQueryParam("enable3dCharacter", "true");
     const characterBackground = getQueryParam("characterBackground", "transparent");
     const [qrCodeUrl,setQrCodeUrl]=useState('https://ai-workforce.intelligage.net/access-point-1733936970170-71c88996-4e8c-469d-a7ac-317fe4a9f9c8')
-    const animationFileName = getQueryParam("animationFileName", "wave-animation");
+    const animationFileName = getQueryParam("animationFileName", "wave-animations");
     const animation =`${__R2_BUCKET_ASSET_URL__}/${animationFileName}.json`
     const outerBackground = getQueryParam("outerBackground", "3832A0");
   const searchParams = new URLSearchParams(window.location.search);
@@ -149,7 +149,7 @@ const GreeterDemo2 = () => {
   
     
   return (
-    <Container style={{backgroundColor: outerBackground}}>
+    <Container style={{backgroundColor: outerBackground,border:"15px solid white",borderRadius:"50px"}}>
         <AnimationContainer>
           
           <Lottie 
@@ -158,7 +158,7 @@ const GreeterDemo2 = () => {
            options={{
            loop: true,
            autoplay: true,
-           path: animation,
+           path: animationFileName,
            rendererSettings: {
              preserveAspectRatio: "xMidYMid slice"
            }
@@ -168,24 +168,14 @@ const GreeterDemo2 = () => {
          /> 
         </AnimationContainer>
         <ImageContainer>{avatar}</ImageContainer>
-        <FooterContainer>
         <div style={{
-  alignSelf: 'center',
-
+          display:"flex",
+          flexDirection:"column",
+          width:"80%",
+          position:"fixed",
+          bottom:50
         }}>
-            <img src={intelliageImage} height={20} width={100} alt="Intelligage" />
-          </div>
-
-          <QRContainer>
-            <QrCodeGenerator  url={qrCodeUrl} height={70} width={70}/>
-            {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
-            <QRText>
-              Scan to continue on
-              <br />
-              your phone
-            </QRText>
-          </QRContainer>
-        <ChatContainer>
+             <ChatContainer>
           <form style={{width:"100%",display:"flex"}}onSubmit={handleSubmitUserChat}>
           <ChatInput
                ref={userChatRef}
@@ -198,7 +188,30 @@ const GreeterDemo2 = () => {
           </form>
 
 </ChatContainer>
+        <FooterContainer>
+     
+   
+
+          <QRContainer>
+            <QrCodeGenerator  url={qrCodeUrl} height={120} width={120}/>
+            {/* <QRCode src={qrCodeImage} alt="QR Code" /> */}
+            <QRText>
+              Scan to continue on
+              <br />
+              your phone
+            </QRText>
+          </QRContainer>
+        
+       
         </FooterContainer>
+        <div style={{
+  alignSelf: 'end',
+          marginRight:"50px"
+        }}>
+            <img src={intelliageImage} height={20} width={100} alt="Intelligage" />
+          </div>
+        </div>
+
         <TypingOverlay text={parseResult?.strippedText?.trim() ?? ""} />
 
     </Container>

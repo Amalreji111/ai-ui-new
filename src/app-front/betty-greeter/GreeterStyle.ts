@@ -13,9 +13,10 @@ export const Container = styled.div`
 
 `;
 export const AnimationContainer = styled.div`
-   flex:0.3;
-   top:50;
+   position:absolute;
+   top:0;
    width: 100%;
+   height:20%;
 `;
 export const ImageContainer = styled.div`
     flex:0.4;
@@ -26,11 +27,8 @@ export const ImageContainer = styled.div`
    overflow:hidden;
 `
 export const FooterContainer = styled.div`
-    flex:0.2;
-    display:flex;
-    flex-direction:row;
-    justify-content: space-between;
-   width: 100%;
+   margin-top: 2%;
+   width: 100vw;
 
 
 `
@@ -39,12 +37,12 @@ export const QRContainer = styled.div`
   justify-content: flex-start;
   height: 72px;
   border-radius: 10px;
-//   margin-right: 10px;
+  margin-right: 35px;
   border-top-right-radius: 0px;
   border-bottom-right-radius:0px ;
   align-self: center;
-  background:#FFFFFF1A;
-  gap: 12px;
+  width: 100%;
+  gap: 20px;
 `;
 export const QRText = styled.p`
 color: white;
@@ -63,8 +61,6 @@ export const ChatContainer = styled.div`
   background: #f4f4f4;
   border-top: 1px solid #ddd;
   width: 100%;
-  position: fixed;
-  bottom: 0;
 `;
 
 export const ChatInput = styled.input`
@@ -103,7 +99,8 @@ export const TypeOverlayContainer = styled.div`
   background: transparent;
   color: white;
   min-height: 100px;
-  max-height: 200px;
+  max-height: 100px;
+  height: 100px;
   max-width: 800px;
   width: 100%;
   font-size: 38px;
@@ -111,10 +108,10 @@ export const TypeOverlayContainer = styled.div`
   margin-top: 16px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   position: absolute;
-  bottom: 18%;
+  bottom: 22%;
   left: 50%;
   transform: translate(-50%, 0);
-  overflow-y: auto;
+  overflow-y: hidden;
   z-index: 1000;
   scrollbar-width: none; // Firefox
   -ms-overflow-style: none; // IE and Edge
